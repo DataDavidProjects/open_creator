@@ -1,0 +1,45 @@
+project: &project "aesthetic_destinations"
+
+background_dir: "data/{}/background"
+topic: "Luxury and Travels"
+language: "English using basic vocabularies"
+caption_style: "motivational"
+social_media: "Instagram"
+
+line_text: "oneline"
+sep: "."
+
+font:
+  font_type: "HATTEN.TTF"
+  text_color: "#FFFFFF"
+  font_size: 35
+  wrap_block: 40
+
+  text_coords:
+    auto: True
+    width: 150 #if auto is False
+    height: 280 #if auto is False
+    align: "center"
+
+path:
+  path_to_image: "./data/{}/background/{}_template_{}.png"
+  path_to_font: "./fonts/"
+
+avoid_prompt: >
+  Do not write false informations
+  Do not use emojis or hastags!.
+  Do not leave empty spaces between each line
+
+example: >
+  "I don’t have the luxury of time to be unhappy. I have too much to do. I have too much do accomplish. Who has the time to be unhappy?. \n"
+  "Time flies. It’s up to you to be the navigator. \n"
+  "We wander for distraction, but we travel for fulfilment. \n"
+  "Living on Earth is expensive, but it does include a free trip around the sun every year. \n"
+  "It is a luxury to be understood. \n"
+  "It is the ultimate luxury to combine passion and contribution. It’s also a clear path to happiness. \n"
+  "Art is not a luxury, but a necessity. \n"
+
+image_processing:
+  alpha_overlay: 0.35
+  color_overlay: "#0000"
+  color_portait: "#FFFFFF"
