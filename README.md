@@ -61,7 +61,7 @@ mkdir data/<your project name>/pins
 Alternatively you can run the python file project_processing.py
 
 ```bash
-mkdir data/<your project name>/pins
+python project_processing.py <project name>
 ```
 
 3. Use the config.yaml to set the desired parameters
