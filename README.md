@@ -73,7 +73,7 @@ project: &project "aesthetic_destinations"
 
 create: 20
 background_dir: "data/{}/background"
-topic: "Luxury and Travels"
+topic: "..."
 language: "English using basic vocabularies"
 caption_style: "motivational"
 social_media: "Instagram"
@@ -84,11 +84,7 @@ avoid_prompt: >
   Do not leave empty spaces between each line
 
 example: >
-  "I don’t have the luxury of time to be unhappy. I have too much to do. I have too much do accomplish. Who has the time to be unhappy?. \n"
-  "Time flies. It’s up to you to be the navigator. \n"
-  "We wander for distraction, but we travel for fulfilment. \n"
-  "Living on Earth is expensive, but it does include a free trip around the sun every year. \n"
-  "It is a luxury to be understood. \n"
-  "It is the ultimate luxury to combine passion and contribution. It’s also a clear path to happiness. \n"
-  "Art is not a luxury, but a necessity. \n"
+  "...... \n"
+  "...... \n"
+  "...... \n"
 ```
