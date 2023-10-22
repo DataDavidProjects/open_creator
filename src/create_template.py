@@ -38,7 +38,7 @@ background_dir = params["background_dir"].format(project)
 avoid_prompt = params["avoid_prompt"]
 
 # Create Quotes Data
-n = 10
+n = params["create"]
 prompt = f"""
 Provide me a list of {n}  {line_text}  {caption_style} about {topic} in {language}. 
 They should fit the mood of a {social_media} post and contain high traffic keywords for {topic}.

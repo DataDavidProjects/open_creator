@@ -1,5 +1,6 @@
 project: &project "aesthetic_destinations"
 
+create: 20
 background_dir: "data/{}/background"
 topic: "Luxury and Travels"
 language: "English using basic vocabularies"
