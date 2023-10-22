@@ -1,5 +1,6 @@
 # Custom folders
 data/
+fonts/
 **/.env
 
 # Byte-compiled / optimized / DLL files
