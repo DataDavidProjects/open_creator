@@ -9,6 +9,7 @@ def load_params(file_path: str) -> dict:
 
 
 def create_directories(project: str):
+    os.makedirs("fonts", exist_ok=True)
     os.makedirs("data", exist_ok=True)
     os.makedirs(f"data/{project}", exist_ok=True)
     os.makedirs("data/background", exist_ok=True)
