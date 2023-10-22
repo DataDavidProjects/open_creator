@@ -47,6 +47,10 @@ mkdir data/<your project name>
 2. Create sub directories in each project you create (recommended)
 
 ```bash
+mkdir fonts
+```
+
+```bash
 mkdir data/<your project name>/background
 ```
 
