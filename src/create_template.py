@@ -42,7 +42,7 @@ n = params["create"]
 prompt = f"""
 Provide me a list of {n}  {line_text}  {caption_style} about {topic} in {language}. 
 They should fit the mood of a {social_media} post and contain high traffic keywords for {topic}.
-Separate each quote using a \n.
+Separate each quote using a {sep} .
 {avoid_prompt}
 Try to use terms and keywords that have high SEO on {social_media}.
 Create the content only in {language}.

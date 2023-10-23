@@ -1,5 +1,5 @@
 from PIL import Image
-from typing import Callable, Dict, Tuple
+from typing import Callable, Dict, Tuple, Optional
 from PIL import Image, ImageFilter, ImageFont, ImageDraw
 import functools
 import yaml
@@ -123,10 +123,10 @@ def apply_portrait(
 
 alpha = params["image_processing"]["alpha_overlay"]
 color_overlay = params["image_processing"]["color_overlay"]
-color_portait = params["image_processing"]["color_portait"]
+color_portrait = params["image_processing"]["color_portrait"]
 
 image_effect_dict = {
-    "portrait": functools.partial(apply_portrait, color=color_portait),
+    "portrait": functools.partial(apply_portrait, color=color_portrait),
     "overlay": functools.partial(apply_overlay, color=color_overlay, alpha=alpha),
     "blur": functools.partial(apply_blur, None),
 }
@@ -152,3 +152,56 @@ def image_effects(
         image = effect_dict[effect](image)
 
     return image
+
+
+import os
+from typing import Union
+
+
+def rename_images(folder_path: str, pattern: str) -> None:
+    """
+    Renames all images in the specified folder according to the given pattern,
+    appending a two-digit iterator at the end of each new filename.
+
+    Parameters:
+    folder_path (str): The path to the folder containing the images to be renamed.
+    pattern (str): The pattern for the new filenames.
+
+    Example:
+    rename_images("/path/to/images", "aesthetic_destinations_template_")
+    This will rename all images in the specified folder to
+    "aesthetic_destinations_template_07.png", "aesthetic_destinations_template_08.png", and so on.
+    """
+
+    # Get a list of all image files in the folder
+    image_files = [
+        f
+        for f in os.listdir(folder_path)
+        if f.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp"))
+    ]
+
+    # Iterate over the image files, renaming each one
+    for i, image_file in enumerate(image_files, start=0):
+        # Create the new filename based on the pattern and iterator
+        new_filename = f"{pattern}{i:02d}{os.path.splitext(image_file)[1]}"
+        # Create the full paths for the current and new filenames
+        current_path = os.path.join(folder_path, image_file)
+        new_path = os.path.join(folder_path, new_filename)
+        # Rename the image file
+        os.rename(current_path, new_path)
+
+
+def resize_image(img: Image, max_size: Optional[Tuple[int, int]] = None) -> Image:
+    """
+    Resize the image while maintaining the original aspect ratio.
+
+    Parameters:
+    img (PIL.Image.Image): The image to be resized.
+    max_size (Optional[Tuple[int, int]], optional): The maximum (width, height) of the resized image. Defaults to None.
+
+    Returns:
+    PIL.Image.Image: The resized image.
+    """
+    if max_size is not None:
+        img.thumbnail(max_size)
+    return img
