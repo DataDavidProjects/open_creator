@@ -38,7 +38,7 @@ line_text = params["line_text"]
 
 
 # Create Quotes Data
-example = "Art is not a luxury, but a necessity."
+example = params["example"]
 prompt = f"""
 Create one  {line_text}  {caption_style} about {topic} in {language}. 
 It should fit the mood of a {social_media} post and contain high traffic keywords for {topic}.
@@ -47,7 +47,7 @@ Try to use terms and keywords that have high SEO on {social_media}.
 Create the content only in {language}.
 Provide only the content with no additional content.
 
-Example output:
+Example of possible outputs:
 {example}
 """
 
@@ -57,9 +57,9 @@ video_caption = create_caption(prompt)
 # Create an empty list to store the images
 img_list = []
 
-n = params["create"]
+images_in_video = params["video_processing"]["images_in_video"]
 # Iterate over the captions using a normal for loop
-for idx in range(n):
+for idx in range(images_in_video):
     # Get a random image path
     img_path = get_random_image_path(background_dir)
 
@@ -83,8 +83,13 @@ path_to_video = params["path"]["path_to_video"].format(project)
 path_to_images = f"data/{project}/pins"
 video_name = "output_video.mp4"
 video_duration = params["video_processing"]["video_duration"]
-
+frame_rate = params["video_processing"]["frame_rate"]
 # Suggested 1920x1080
 process_images_and_create_video(
-    path_to_images, video_name, path_to_video, duration=video_duration, resize=True
+    path_to_images,
+    video_name,
+    path_to_video,
+    duration=video_duration,
+    resize=True,
+    frame_rate=frame_rate,
 )

@@ -28,7 +28,7 @@ sep: "\n"
 font:
   font_type: "HATTEN.TTF"
   text_color: "#FFFFFF"
-  font_size: 100
+  font_size: 30
   wrap_block: 40
 
   text_coords:
@@ -43,11 +43,12 @@ path:
   path_to_video: "data/{}/videos"
 
 image_processing:
-  alpha_overlay: 0.15
+  alpha_overlay: 0.2
   color_overlay: "#0000"
   color_portrait: "#FFFFFF"
 
 video_processing:
-  frame_rate: 50
-  video_duration: 8
+  frame_rate: 5
+  video_duration: 5
   width_resize: 800
+  images_in_video: 5
