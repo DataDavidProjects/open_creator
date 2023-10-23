@@ -60,7 +60,7 @@ def process_images_and_create_video(
     image_folder: str,
     video_name: str,
     output_dir: str,
-    duration: int = 5,
+    video_duration: int = 5,
     resize: bool = False,
     frame_rate: int = 30,
     max_size: Optional[Tuple[int, int]] = None,
@@ -90,4 +90,4 @@ def process_images_and_create_video(
     else:
         images = load_and_resize_images(image_folder)  # No resizing needed
 
-    create_video_from_images(images, video_name, output_dir, duration, frame_rate)
+    create_video_from_images(images, video_name, output_dir, video_duration, frame_rate)
