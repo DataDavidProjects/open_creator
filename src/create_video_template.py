@@ -39,7 +39,7 @@ for idx in range(n):
 
     # Create the captioned image
     captioned_image = create_captioned_image(
-        caption=caption,
+        caption=video_caption,
         font_path=font_path,
         img_path=img_path,
         save_to=f"./data/{project}/pins/{project}_template_{idx}.png",
