@@ -4,13 +4,14 @@ create: 50
 background_dir: "data/{}/background"
 topic: "Luxury and Travels"
 language: "English using basic vocabularies"
-caption_style: "motivational"
+caption_style: "motivational quote"
 social_media: "Instagram"
 
 avoid_prompt: >
   Do not write false informations
   Do not use emojis or hastags!.
   Do not leave empty spaces between each line
+  Do not exceed the request number
 
 example: >
   "I don’t have the luxury of time to be unhappy. I have too much to do. I have too much do accomplish. Who has the time to be unhappy?. \n"
@@ -21,7 +22,7 @@ example: >
   "It is the ultimate luxury to combine passion and contribution. It’s also a clear path to happiness. \n"
   "Art is not a luxury, but a necessity. \n"
 
-line_text: "oneline"
+line_text: "one line"
 sep: "\n"
 
 font:

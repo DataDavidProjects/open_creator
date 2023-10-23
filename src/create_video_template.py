@@ -18,6 +18,15 @@ with open("config.yaml", "r") as file:
 project = params["project"]
 background_dir = params["background_dir"].format(project)
 
+
+# style prompt
+caption_style = params["caption_style"]
+social_media = params["social_media"]
+sep = params["sep"]
+topic = params["topic"]
+language = params["language"]
+avoid_prompt = params["avoid_prompt"]
+
 # caption
 text_color = params["font"]["text_color"]
 font_size = params["font"]["font_size"]
@@ -25,12 +34,29 @@ wrap_block = params["font"]["wrap_block"]
 path_to_font = params["path"]["path_to_font"]
 font = params["font"]["font_type"]
 font_path = path_to_font + font
+line_text = params["line_text"]
+
+
+# Create Quotes Data
+example = "Art is not a luxury, but a necessity."
+prompt = f"""
+Create one  {line_text}  {caption_style} about {topic} in {language}. 
+It should fit the mood of a {social_media} post and contain high traffic keywords for {topic}.
+{avoid_prompt}
+Try to use terms and keywords that have high SEO on {social_media}.
+Create the content only in {language}.
+Provide only the content with no additional content.
+
+Example output:
+{example}
+"""
+
+video_caption = create_caption(prompt)
 
 
 # Create an empty list to store the images
 img_list = []
 
-video_caption = "PIXEL POSE MONEY"
 n = params["create"]
 # Iterate over the captions using a normal for loop
 for idx in range(n):
