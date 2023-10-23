@@ -39,7 +39,9 @@ def create_caption_bulk(prompt: str) -> pd.DataFrame:
     )
     captions_list = response.split("\n")
     # Remove the numbered bullet point from the start of each caption
-    captions_list = [re.sub(r"^\d+\.\s*", "", caption) for caption in captions_list]
+    captions_list = [
+        re.sub(r"^\d+\.\s*", "", caption).replace("\n", "") for caption in captions_list
+    ]
     # Create a DataFrame to store the captions
     data = pd.DataFrame(captions_list, columns=["caption"])
     return data

@@ -1,10 +1,10 @@
 project: &project "aesthetic_destinations"
 
-create: 50
+create: 20
 background_dir: "data/{}/background"
-topic: "Luxury and Travels"
-language: "English using basic vocabularies"
-caption_style: "motivational quote"
+topic: "Body skin care for women"
+language: "Hungarian friendly tone"
+caption_style: "science fun fact quotes"
 social_media: "Instagram"
 
 avoid_prompt: >
@@ -22,19 +22,19 @@ example: >
   "It is the ultimate luxury to combine passion and contribution. It’s also a clear path to happiness. \n"
   "Art is not a luxury, but a necessity. \n"
 
-line_text: "one line"
+line_text: "multiline"
 sep: "\n"
 
 font:
-  font_type: "HATTEN.TTF"
-  text_color: "#FFFFFF"
-  font_size: 50
-  wrap_block: 40
+  font_type: "MONTSERRAT-REGULAR.TTF"
+  text_color: "#0000"
+  font_size: 30
+  wrap_block: 50
 
   text_coords:
-    auto: True
+    auto: False
     width: 150 #if auto is False
-    height: 280 #if auto is False
+    height: 400 #if auto is False
     align: "center"
 
 path:
@@ -43,7 +43,7 @@ path:
   path_to_video: "data/{}/videos"
 
 image_processing:
-  alpha_overlay: 0.6
+  alpha_overlay: 0.01
   color_overlay: "#0000"
   color_portrait: "#FFFFFF"
 

@@ -158,7 +158,7 @@ import os
 from typing import Union
 
 
-def rename_images(folder_path: str, pattern: str) -> None:
+def rename_images(folder_path: str, pattern: str, start: int = 0) -> None:
     """
     Renames all images in the specified folder according to the given pattern,
     appending a two-digit iterator at the end of each new filename.
@@ -181,7 +181,7 @@ def rename_images(folder_path: str, pattern: str) -> None:
     ]
 
     # Iterate over the image files, renaming each one
-    for i, image_file in enumerate(image_files, start=0):
+    for i, image_file in enumerate(image_files, start=start):
         # Create the new filename based on the pattern and iterator
         new_filename = f"{pattern}{i:02d}{os.path.splitext(image_file)[1]}"
         # Create the full paths for the current and new filenames

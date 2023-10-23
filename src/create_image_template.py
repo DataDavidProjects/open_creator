@@ -56,7 +56,7 @@ Example output:
 data = create_caption_bulk(prompt=prompt).replace("", np.nan).dropna()
 
 # Modify string
-data["caption"] = data["caption"].str.strip().str.upper()
+data["caption"] = data["caption"].str.strip()  # .str.upper()
 
 # Create an empty list to store the images
 img_list = []
