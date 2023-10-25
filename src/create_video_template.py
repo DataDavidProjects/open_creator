@@ -7,14 +7,15 @@ from processing.video_processing import (
 import numpy as np
 import time
 import yaml
-
+from config.config_utils import load_config
 
 start = time.time()
 
 
-# Load parameters from YAML file
-with open("config.yaml", "r") as file:
-    params = yaml.safe_load(file)
+major_config = load_config("config.yaml")
+project = major_config["project"]
+minor_config = load_config(f"config/{project}/config.yaml")
+params = {**major_config, **minor_config}
 
 # Assign parameters to variables
 project = params["project"]

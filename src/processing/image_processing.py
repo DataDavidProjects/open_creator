@@ -6,11 +6,12 @@ import yaml
 import os
 import random
 from typing import List
+from config.config_utils import load_config
 
-
-# Load parameters from YAML file
-with open("config.yaml", "r") as file:
-    params = yaml.safe_load(file)
+major_config = load_config("config.yaml")
+project = major_config["project"]
+minor_config = load_config(f"src/config/{project}/config.yaml")
+params = {**major_config, **minor_config}
 
 
 def get_random_image_path(directory: str) -> str:

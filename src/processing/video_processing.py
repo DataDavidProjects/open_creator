@@ -5,10 +5,13 @@ import numpy as np
 import yaml
 from processing.image_processing import resize_image, read_image
 from typing import Optional, Tuple, Union
+from config.config_utils import load_config
 
-# Load parameters from YAML file
-with open("config.yaml", "r") as file:
-    params = yaml.safe_load(file)
+
+major_config = load_config("config.yaml")
+project = major_config["project"]
+minor_config = load_config(f"src/config/{project}/config.yaml")
+params = {**major_config, **minor_config}
 
 
 def check_image_sizes(image_paths):

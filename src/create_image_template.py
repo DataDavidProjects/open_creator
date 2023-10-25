@@ -1,7 +1,7 @@
 from creation_caption import create_caption, create_caption_bulk
 from creation_infographic import create_captioned_image
 from processing.image_processing import get_random_image_path
-
+from config.config_utils import load_config
 import numpy as np
 import time
 import yaml
@@ -9,13 +9,10 @@ import yaml
 
 start = time.time()
 
-
-# Load parameters from YAML file
-with open("config.yaml", "r") as file:
-    params = yaml.safe_load(file)
-
-# Assign parameters to variables
-project = params["project"]
+major_config = load_config("config.yaml")
+project = major_config["project"]
+minor_config = load_config(f"src/config/{project}/config.yaml")
+params = {**major_config, **minor_config}
 
 topic = params["topic"]
 language = params["language"]
@@ -71,7 +68,7 @@ for idx, caption in enumerate(data["caption"]):
         caption=caption,
         font_path=font_path,
         img_path=img_path,
-        save_to=f"./data/{project}/pins/{project}_template_{idx}.png",
+        save_to=f"src/data/{project}/pins/{project}_template_{idx}.png",
         text_color=text_color,
         font_size=font_size,
         wrap_block=wrap_block,
@@ -85,4 +82,4 @@ data["images"] = img_list
 end = time.time()
 print(f"Execution in {end-start} seconds")
 # Save data
-data.to_csv(f"./data/{project}/tables/quotes.csv", sep=",", index=False)
+data.to_csv(f"src/data/{project}/tables/quotes.csv", sep=",", index=False)
