@@ -27,9 +27,9 @@ font:
     align: "left"
 
 path:
-  path_to_image: "./data/{}/background/{}_template_{}.png"
-  path_to_font: "./fonts/"
-  path_to_video: "./data/{}/videos"
+  path_to_image: "src/data/{}/background/{}_template_{}.png"
+  path_to_font: "src/fonts/"
+  path_to_video: "src/data/{}/videos"
 
 image_processing:
   alpha_overlay: 0.01
