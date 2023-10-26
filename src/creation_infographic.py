@@ -8,7 +8,7 @@ from processing.text_processing import get_coords
 from config.config_utils import load_config
 
 
-major_config = load_config("config.yaml")
+major_config = load_config("src/config/config.yaml")
 project = major_config["project"]
 minor_config = load_config(f"src/config/{project}/config.yaml")
 params = {**major_config, **minor_config}
@@ -48,7 +48,7 @@ def create_captioned_image(
     raw_image = Image.open(img_path)
 
     image = image_effects(raw_image, effect="portrait")
-    # image = image_effects(image, effect="overlay")
+    image = image_effects(image, effect="overlay")
 
     draw = ImageDraw.Draw(image)
 

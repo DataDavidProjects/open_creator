@@ -1,8 +1,0 @@
-project: &project "aesthetic_destinations"
-
-create: 5
-background_dir: "src/data/{}/background"
-topic: "Hair care for women"
-language: "Hungarian friendly tone"
-caption_style: "science fun fact quotes"
-social_media: "Instagram"

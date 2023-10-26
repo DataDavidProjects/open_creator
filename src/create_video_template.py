@@ -12,9 +12,9 @@ from config.config_utils import load_config
 start = time.time()
 
 
-major_config = load_config("config.yaml")
+major_config = load_config("src/config/config.yaml")
 project = major_config["project"]
-minor_config = load_config(f"config/{project}/config.yaml")
+minor_config = load_config(f"src/config/{project}/config.yaml")
 params = {**major_config, **minor_config}
 
 # Assign parameters to variables
@@ -57,13 +57,13 @@ Example of possible outputs:
 
 # video
 path_to_video = params["path"]["path_to_video"].format(project)
-path_to_images = f"data/{project}/pins"
+path_to_images = f"src/data/{project}/pins"
 video_duration = params["video_processing"]["video_duration"]
 frame_rate = params["video_processing"]["frame_rate"]
 
 start = time.time()
 # Suggested 1920x1080
-n_videos = 20
+n_videos = 2
 for v in range(n_videos):
     video_caption = create_caption(prompt)
 
@@ -81,7 +81,7 @@ for v in range(n_videos):
             caption=video_caption,
             font_path=font_path,
             img_path=img_path,
-            save_to=f"./data/{project}/pins/{project}_template_{idx}.png",
+            save_to=f"src/data/{project}/pins/{project}_template_{idx}.png",
             text_color=text_color,
             font_size=font_size,
             wrap_block=wrap_block,
