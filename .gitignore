@@ -1,10 +1,12 @@
 # Custom folders
 data/
 # Ignore everything in the config directory
-config/**
+config/
+# Explicitly ignore all subdirectories in the config directory
+config/*/**
 # Whitelist the first level of files in the config directory
-!config/*.py*
-!config/*.yaml*
+!config/*.*
+
 
 
 
