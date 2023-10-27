@@ -1,6 +1,6 @@
 project: &project "aesthetic_destinations"
 
-create: 5
+create: 3
 background_dir: "src/data/{}/background"
 
 topic: "Luxury and Travel"
