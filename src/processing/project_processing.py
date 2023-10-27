@@ -1,6 +1,7 @@
 import argparse
 import os
 import yaml
+import shutil
 
 
 def load_params(file_path: str) -> dict:
@@ -65,8 +66,44 @@ video_processing:
         config_file.write(config_content)
 
 
-if __name__ == "__main__":
+def remove_project(project: str):
+    # Paths to be removed
+    data_path = f"./data/{project}"
+    config_path = f"./config/{project}"
+
+    # Remove directories if they exist
+    if os.path.exists(data_path):
+        shutil.rmtree(data_path)
+    if os.path.exists(config_path):
+        shutil.rmtree(config_path)
+
+
+def main():
     parser = argparse.ArgumentParser(description="Process a project.")
-    parser.add_argument("project", type=str, help="The name of the project")
+
+    subparsers = parser.add_subparsers(dest="command", help="Sub-command help")
+
+    # Sub-parser for the create command
+    parser_create = subparsers.add_parser("create", help="Create a new project.")
+    parser_create.add_argument(
+        "project", type=str, help="The name of the project to create"
+    )
+
+    # Sub-parser for the remove command
+    parser_remove = subparsers.add_parser("remove", help="Remove an existing project.")
+    parser_remove.add_argument(
+        "project", type=str, help="The name of the project to remove"
+    )
+
     args = parser.parse_args()
-    create_directories(args.project)
+
+    if args.command == "create":
+        create_directories(args.project)
+    elif args.command == "remove":
+        remove_project(args.project)
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
