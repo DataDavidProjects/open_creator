@@ -3,7 +3,8 @@ data/
 # Ignore everything in the config directory
 config/**
 # Whitelist the first level of files in the config directory
-!config/*.*
+!config/*.py*
+!config/*.yaml*
 
 
 
