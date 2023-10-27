@@ -30,7 +30,7 @@ cd open-creator
 pip install -r requirements.txt
 ```
 
-3. Put your OPENAI API KEY in the config.yaml file:
+3. Put your OPENAI API KEY in the .env file:
 
 ```bash
 OPENAI_API_KEY: "your-api-key-here"
@@ -68,9 +68,7 @@ Alternatively you can run the python file project_processing.py
 python project_processing.py <project name>
 ```
 
-3. Use the config.yaml to set the desired parameters
-
-4. Create content with create_template.py
+3. Use the main config.yaml to set the desired parameters
 
 ```yaml
 project: &project "aesthetic_destinations"
@@ -81,7 +79,11 @@ topic: "..."
 language: "English using basic vocabularies"
 caption_style: "motivational"
 social_media: "Instagram"
+```
 
+4. Handle specific specs related to each project with the config/<project>/config.yaml if you have multiple projects.
+
+```yaml
 avoid_prompt: >
   Do not write false informations
   Do not use emojis or hastags!.
@@ -92,3 +94,5 @@ example: >
   "...... \n"
   "...... \n"
 ```
+
+5. Create content with create_template.py

@@ -13,17 +13,17 @@ example: >
   "It is the ultimate luxury to combine passion and contribution. It’s also a clear path to happiness. \n"
   "Art is not a luxury, but a necessity. \n"
 
-line_text: "multiline"
+line_text: "oneline"
 sep: "\n"
 
 font:
-  font_type: "MONTSERRAT-REGULAR.TTF"
-  text_color: "#0000"
-  font_size: 30
+  font_type: "HATTEN.TTF"
+  text_color: "#FFFF"
+  font_size: 90
   wrap_block: 50
 
   text_coords:
-    auto: False
+    auto: True
     width: 180 #if auto is False
     height: 500 #if auto is False
     align: "left"
@@ -34,7 +34,7 @@ path:
   path_to_video: "src/data/{}/videos"
 
 image_processing:
-  alpha_overlay: 0.01
+  alpha_overlay: 0.1
   color_overlay: "#0000"
   color_portrait: "#FFFFFF"
 
