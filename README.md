@@ -81,7 +81,7 @@ caption_style: "motivational"
 social_media: "Instagram"
 ```
 
-4. Handle specific specs related to each project with the config/<project>/config.yaml if you have multiple projects.
+4. Handle specific specs related to each project with the config/ your project name /config.yaml if you have multiple projects.
 
 ```yaml
 avoid_prompt: >
