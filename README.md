@@ -44,5 +44,3 @@ The `project_setup.py` script is provided to help you initialize a new project w
    ```bash
    python project_setup.py --remove aesthetic_destinations
    ```
-
-This script simplifies the setup and teardown of your project environment, allowing you to focus on content creation.
