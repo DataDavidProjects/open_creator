@@ -10,8 +10,6 @@
 
 Open Creator is a lightweight micro-framework designed to facilitate the creation of social media captions using OpenAI and Pillow libraries. With Open Creator, you can easily generate and customize content.
 
-## Quick Start
-
 ### Project Setup
 
 The `project_setup.py` script is provided to help you initialize a new project with the necessary directory structure. This script creates a configuration file and organizes your project's assets into separate directories for each social media platform.
