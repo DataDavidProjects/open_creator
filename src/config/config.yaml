@@ -1,9 +1,0 @@
-project: &project "aesthetic_destinations"
-
-create: 3
-background_dir: "src/data/{}/background"
-
-topic: "Luxury and Travel"
-language: "English friendly tone with basic words"
-caption_style: "inspiring quotes"
-social_media: "Instagram"

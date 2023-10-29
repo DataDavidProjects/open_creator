@@ -1,17 +1,10 @@
 # Custom folders
 data/
-# Ignore everything in the config directory
 config/
-# Explicitly ignore all subdirectories in the config directory
-config/*/**
-# Whitelist the first level of files in the config directory
-!config/*.*
-
-
-
 
 fonts/
-**/.env
+.env
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -12,87 +12,39 @@ Open Creator is a lightweight micro-framework designed to facilitate the creatio
 
 ## Quick Start
 
-### Installation
+### Project Setup
 
-1. Clone the repository:
+The `project_setup.py` script is provided to help you initialize a new project with the necessary directory structure. This script creates a configuration file and organizes your project's assets into separate directories for each social media platform.
 
-```bash
-git clone https://github.com/DataDavidProjects/open-creator.git
-```
+#### Usage
 
-```bash
-cd open-creator
-```
+1. **Creating a New Project**:
 
-2. Install the requirements:
+   - Navigate to the directory containing `project_setup.py`.
+   - Run the following command in your terminal:
+     ```bash
+     python project_setup.py --create <project_name> --platforms <platform1> <platform2> ...
+     ```
+   - Replace `<project_name>` with the name of your project (e.g., `aesthetic_destinations`), and `<platform1> <platform2> ...` with the social media platforms you are targeting (e.g., `pinterest tiktok instagram`).
 
-```bash
-pip install -r requirements.txt
-```
+   Example:
 
-3. Put your OPENAI API KEY in the .env file:
+   ```bash
+   python project_setup.py --create aesthetic_destinations --platforms pinterest tiktok instagram
+   ```
 
-```bash
-OPENAI_API_KEY: "your-api-key-here"
-```
+2. **Removing a Project**:
 
-### Create Content
+   - If you need to remove a project and its associated directories, run the following command:
+     ```bash
+     python project_setup.py --remove <project_name>
+     ```
+   - Replace `<project_name>` with the name of the project you wish to remove.
 
-1. Create a folder named data
+   Example:
 
-```bash
-mkdir data/<your project name>
-```
+   ```bash
+   python project_setup.py --remove aesthetic_destinations
+   ```
 
-2. Create sub directories in each project you create (recommended)
-
-```bash
-mkdir fonts
-```
-
-```bash
-mkdir data/<your project name>/background
-```
-
-```bash
-mkdir data/<your project name>/tables
-```
-
-```bash
-mkdir data/<your project name>/pins
-```
-
-Alternatively you can run the python file project_processing.py
-
-```bash
-python project_processing.py create <project name>
-```
-
-3. Use the main config.yaml to set the desired parameters
-
-```yaml
-project: &project "aesthetic_destinations"
-
-create: 20
-background_dir: "data/{}/background"
-topic: "..."
-language: "English using basic vocabularies"
-caption_style: "motivational"
-social_media: "Instagram"
-```
-
-4. Handle specific specs related to each project with the config/ your project name /config.yaml if you have multiple projects.
-
-```yaml
-avoid_prompt: >
-  Do not write false informations
-  Do not use emojis or hastags!.
-  Do not leave empty spaces between each line
-
-example: >
-  "...... \n"
-  "...... \n"
-  "...... \n"
-```
-
-5. Create content with create_template.py
+This script simplifies the setup and teardown of your project environment, allowing you to focus on content creation.
