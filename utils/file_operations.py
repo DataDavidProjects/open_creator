@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, Dict, Optional
 
+import yaml
 from dotenv import load_dotenv
 
 
@@ -17,7 +18,46 @@ def setup_logger() -> logging.Logger:
     return logger
 
 
-def rename_files(project_name: str, platform: str) -> Optional[bool]:
+def load_config(project_name: str) -> Dict[str, Any]:
+    """
+    Loads the configuration from a YAML file and environment variables.
+
+    Parameters:
+    - project_name (str): The name of the project.
+
+    Returns:
+    - dict: A dictionary containing the loaded configuration.
+    """
+
+    # Load environment variables from the .env file
+    load_dotenv()
+
+    # Construct the path to the YAML configuration file
+    config_file_path = os.path.join("config", f"{project_name}.yaml")
+
+    # Ensure the YAML configuration file exists
+    if not os.path.exists(config_file_path):
+        raise FileNotFoundError(
+            f"Configuration file {config_file_path} does not exist."
+        )
+
+    # Load the YAML configuration file
+    with open(config_file_path, "r") as file:
+        config = yaml.safe_load(file)
+
+    # Merge the loaded environment variables into the configuration dictionary
+    # This allows environment variables to override values specified in the YAML file
+    config.update(os.environ)
+
+    return config
+
+
+# Example Usage:
+# config = load_config('aesthetic_destinations')
+# print(config)
+
+
+def rename_template_images(project_name: str, platform: str) -> Optional[bool]:
     """
     Renames files in the specified project and platform directory
     following the pattern: <projectname>_template_<counter 001, 002 ...>.png
@@ -73,45 +113,6 @@ def rename_files(project_name: str, platform: str) -> Optional[bool]:
 
 
 # Example Usage:
-# success = rename_files('my_project', 'instagram')
+# success = rename_template_images('my_project', 'instagram')
 # if success is not None:
 #     print(f"All files renamed successfully: {success}")
-
-
-def load_config(project_name: str) -> Dict[str, Any]:
-    """
-    Loads the configuration from a YAML file and environment variables.
-
-    Parameters:
-    - project_name (str): The name of the project.
-
-    Returns:
-    - dict: A dictionary containing the loaded configuration.
-    """
-
-    # Load environment variables from the .env file
-    load_dotenv()
-
-    # Construct the path to the YAML configuration file
-    config_file_path = os.path.join("config", f"{project_name}.yaml")
-
-    # Ensure the YAML configuration file exists
-    if not os.path.exists(config_file_path):
-        raise FileNotFoundError(
-            f"Configuration file {config_file_path} does not exist."
-        )
-
-    # Load the YAML configuration file
-    with open(config_file_path, "r") as file:
-        config = yaml.safe_load(file)
-
-    # Merge the loaded environment variables into the configuration dictionary
-    # This allows environment variables to override values specified in the YAML file
-    config.update(os.environ)
-
-    return config
-
-
-# Example Usage:
-# config = load_config('aesthetic_destinations')
-# print(config)
