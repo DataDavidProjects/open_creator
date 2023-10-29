@@ -1,10 +1,9 @@
 # Custom folders
 data/
 config/
-
 fonts/
 .env
-.vscode
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
