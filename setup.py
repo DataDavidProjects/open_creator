@@ -9,8 +9,7 @@ setup(
     author="DataProjects",
     author_email="davis.dataprojects@gmail.com",
     url="https://github.com/DavisDataProjects/open_creator",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
+    packages=find_packages(),
     install_requires=[
         "Pillow",
         "PyYAML",

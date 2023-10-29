@@ -2,7 +2,6 @@ import os
 from typing import List
 
 from PIL import Image
-
 from utils.file_operations import setup_logger
 
 logger = setup_logger()
