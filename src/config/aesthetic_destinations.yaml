@@ -1,1 +1,97 @@
 project: aesthetic_destinations
+
+image_processing:
+  alpha_overlay: 0.01
+  color_overlay: "#0000"
+  color_portrait: "#0000"
+
+anantara:
+  destinations:
+    Africa:
+      Mauritius:
+        - "Iko Mauritius Resort"
+      Mozambique:
+        - "Bazaruto Island Resort"
+        - "Medjumbe Island Resort"
+      Tunisia:
+        - "Sahara Tozeur Resort"
+      Zambia:
+        - "Royal Livingstone Hotel"
+
+    Asia:
+      Cambodia:
+        - "Angkor Resort"
+      China:
+        - "Guiyang Resort"
+        - "Xishuangbanna Resort"
+      Indonesia:
+        - "Seminyak Resort"
+        - "Uluwatu Resort"
+        - "Bali Vacation Club"
+      Malaysia:
+        - "Desaru Coast Resort"
+      Maldives:
+        - "Dhigu Resort"
+        - "Kihavah Villas"
+        - "Naladhu Private Island"
+        - "Veli Resort"
+        - "Niyama Private Islands"
+      Oman:
+        - "Al Baleed Resort Salalah"
+        - "Al Jabal Al Akhdar Resort"
+      Qatar:
+        - "Banana Island Resort"
+      Sri Lanka:
+        - "Kalutara Resort"
+        - "Peace Haven Tangalle Resort"
+      Thailand:
+        Bangkok:
+          - "Riverside Resort"
+          - "Siam Hotel"
+          - "Loy Pela Voyages"
+        Chiang Mai:
+          - "Chiang Mai Resort"
+          - "Chiang Mai Serviced Suites"
+        Chiang Rai:
+          - "Golden Triangle Resort"
+      Vietnam:
+        - "Hoi An Resort"
+        - "Mui Ne Resort"
+        - "Quy Nhon Villas"
+        - "The Vietage by Anantara"
+
+    Europe:
+      France:
+        - "Plaza Nice Hotel"
+      Hungary:
+        - "New York Palace Budapest Hotel"
+      Ireland:
+        - "The Marker Dublin"
+      Italy:
+        - "Convento di Amalfi Hotel"
+        - "Palazzo Naiadi Rome Hotel"
+      Netherlands:
+        - "Grand Hotel Krasnapolsky Amsterdam"
+      Portugal:
+        - "Vilamoura Resort"
+      Spain:
+        - "Villa Padierna Palace Resort"
+
+    Middle East:
+      United Arab Emirates:
+        Abu Dhabi:
+          - "Al Yamm Resort"
+          - "Al Sahel Resort"
+          - "Desert Islands Resort"
+          - "Qasr Al Sarab Resort"
+          - "Eastern Mangroves Hotel"
+        Dubai:
+          - "The Palm Resort"
+          - "World Islands Resort"
+          - "Downtown Dubai Hotel"
+        Ras Al Khaimah:
+          - "Mina Al Arab Ras Al Khaimah"
+
+    Oceania:
+      Seychelles:
+        - "Maia Seychelles Villas"

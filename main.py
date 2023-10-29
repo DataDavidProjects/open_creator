@@ -1,4 +1,3 @@
-from src.utils.file_operations import rename_template_images
+from src.utils.file_operations import rename_files_in_directory
 
-project_name = "aesthetic_destinations"
-rename_template_images(project_name=project_name, platform="tiktok")
+rename_files_in_directory("aesthetic_destinations", "tiktok", "images", "images")
