@@ -8,7 +8,7 @@
 
 ## Description
 
-Open Creator is a lightweight micro-framework designed to facilitate the creation of social media captions using OpenAI and Pillow libraries. With Open Creator, you can easily generate and customize content.
+Open Creator is a lightweight micro-framework designed to facilitate the creation of social media captions using OpenAI and Pillow libraries.
 
 ### Project Setup
 
