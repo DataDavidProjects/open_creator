@@ -3,10 +3,11 @@ from typing import Callable, Dict, Tuple, Optional
 from PIL import Image, ImageFilter, ImageFont, ImageDraw
 import functools
 import yaml
+import math
 import os
 import random
 from typing import List
-from config.config_utils import load_config
+from src.config.config_utils import load_config
 
 major_config = load_config("src/config/config.yaml")
 project = major_config["project"]
@@ -192,9 +193,11 @@ def rename_images(folder_path: str, pattern: str, start: int = 0) -> None:
         os.rename(current_path, new_path)
 
 
-def resize_image(img: Image, max_size: Optional[Tuple[int, int]] = None) -> Image:
+def resize_image(
+    img: Image, max_size: Optional[Tuple[int, int]] = None, aspect_ratio=True
+) -> Image:
     """
-    Resize the image while maintaining the original aspect ratio.
+    Resize the image while maintaining the original aspect ratio or no.
 
     Parameters:
     img (PIL.Image.Image): The image to be resized.
@@ -203,6 +206,20 @@ def resize_image(img: Image, max_size: Optional[Tuple[int, int]] = None) -> Imag
     Returns:
     PIL.Image.Image: The resized image.
     """
-    if max_size is not None:
-        img.thumbnail(max_size)
+    # Calculate the new dimensions based on the aspect_ratio parameter
+    width, height = img.size
+    if aspect_ratio:
+        if width > height:
+            new_width = max_size
+            new_height = math.floor(height * (max_size / width))
+        else:
+            new_height = max_size
+            new_width = math.floor(width * (max_size / height))
+    else:
+        new_width = max_size
+        new_height = 600  # Fixed height for a non-aspect-ratio square
+
+    # Resize the image
+    img.thumbnail((new_width, new_height))
+
     return img

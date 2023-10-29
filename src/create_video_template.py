@@ -66,7 +66,7 @@ frame_rate = params["video_processing"]["frame_rate"]
 start = time.time()
 # Suggested 1920x1080
 n_videos = 2
-video_caption = "YOU ONLY LIVE ONCE"  # create_caption(prompt)
+video_caption = ""  # create_caption(prompt)
 for v in range(n_videos):
     # Create an empty list to store the images
     img_list = []

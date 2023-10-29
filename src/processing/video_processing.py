@@ -5,7 +5,7 @@ import numpy as np
 import yaml
 from processing.image_processing import resize_image, read_image
 from typing import Optional, Tuple, Union
-from config.config_utils import load_config
+from src.config.config_utils import load_config
 
 
 major_config = load_config("src/config/config.yaml")
@@ -66,7 +66,7 @@ def process_images_and_create_video(
     video_duration: int = 5,
     resize: bool = False,
     frame_rate: int = 30,
-    max_size: Optional[Tuple[int, int]] = None,
+    max_size: Optional[Tuple[int, int]] = width_resize,
 ) -> None:
     images = []
     for img_name in os.listdir(image_folder):
@@ -74,6 +74,7 @@ def process_images_and_create_video(
             image_path = os.path.join(image_folder, img_name)
             img = read_image(image_path)
             if resize and max_size is not None:
+                print(000)
                 img = resize_image(img, max_size=max_size)
             images.append(cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR))
 
