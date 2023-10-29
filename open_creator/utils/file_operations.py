@@ -72,7 +72,9 @@ def rename_template_images(project_name: str, platform: str) -> Optional[bool]:
     logger = setup_logger()
 
     # Construct the path to the templates directory
-    templates_dir = os.path.join("assets", "data", project_name, platform, "templates")
+    templates_dir = os.path.join(
+        "open_creator", "assets", "data", project_name, platform, "templates"
+    )
 
     # Ensure the directory exists
     if not os.path.exists(templates_dir):
