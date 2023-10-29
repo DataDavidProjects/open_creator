@@ -33,7 +33,7 @@ def load_config(project_name: str) -> Dict[str, Any]:
     load_dotenv()
 
     # Construct the path to the YAML configuration file
-    config_file_path = os.path.join("config", f"{project_name}.yaml")
+    config_file_path = os.path.join("src/config", f"{project_name}.yaml")
 
     # Ensure the YAML configuration file exists
     if not os.path.exists(config_file_path):
@@ -73,7 +73,7 @@ def rename_template_images(project_name: str, platform: str) -> Optional[bool]:
 
     # Construct the path to the templates directory
     templates_dir = os.path.join(
-        "open_creator", "assets", "data", project_name, platform, "templates"
+        "src", "assets", "data", project_name, platform, "templates"
     )
 
     # Ensure the directory exists

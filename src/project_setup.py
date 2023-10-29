@@ -10,20 +10,20 @@ class ProjectSetup:
 
     def create_structure(self):
         os.makedirs(f"config", exist_ok=True)
-        os.makedirs(f"open_creator/assets/data/{self.project_name}", exist_ok=True)
+        os.makedirs(f"./assets/data/{self.project_name}", exist_ok=True)
 
-        with open(f"open_creator/config/{self.project_name}.yaml", "w") as file:
+        with open(f"./config/{self.project_name}.yaml", "w") as file:
             file.write(f"project: {self.project_name}")
 
         for platform in self.platforms:
-            platform_path = f"open_creator/assets/data/{self.project_name}/{platform}"
+            platform_path = f"./assets/data/{self.project_name}/{platform}"
             os.makedirs(f"{platform_path}/templates", exist_ok=True)
             for subfolder in ["tables", "images", "videos"]:
                 os.makedirs(f"{platform_path}/{subfolder}", exist_ok=True)
 
     def remove_structure(self):
-        os.remove(f"open_creator/config/{self.project_name}.yaml")
-        os.system(f"rm -rf open_creator/assets/data/{self.project_name}")
+        os.remove(f"./config/{self.project_name}.yaml")
+        os.system(f"rm -rf ./assets/data/{self.project_name}")
 
 
 def main():
