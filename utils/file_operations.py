@@ -1,6 +1,7 @@
-import os
 import logging
-from typing import Dict, Any, Optional
+import os
+from typing import Any, Dict, Optional
+
 from dotenv import load_dotenv
 
 
