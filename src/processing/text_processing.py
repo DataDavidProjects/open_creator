@@ -176,9 +176,14 @@ class Blogger:
 
 
 import os
+import time
 
 # Usage example:
 from dotenv import load_dotenv
+
+# time start
+start = time.time()
+
 
 # Load environment variables
 load_dotenv()
@@ -186,6 +191,7 @@ api_key = os.environ.get("OPENAI_API_KEY")
 
 # Initialize the Blogger class with the API key
 blogger = Blogger(api_key, tone="modern and friendly")
+
 
 # Define the topic for the blog post
 topic = "Dubai Travel"
@@ -212,6 +218,13 @@ main_content = blogger.generate_main_content(topic, aspects, promo_on=True)
 main_content = blogger.generate_main_content(topic, aspects)
 recap = blogger.generate_recap(topic)
 ending = blogger.generate_ending()
+
+# time end
+end = time.time()
+
+
+# Execution time
+print(f"Execution time: {end-time} seconds")
 
 # Output the blog post
 print(f"Title: {title}\n")
