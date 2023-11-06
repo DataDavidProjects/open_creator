@@ -1,4 +1,5 @@
 import re
+import time
 
 import openai
 from dotenv import load_dotenv
@@ -35,6 +36,7 @@ def create_caption(
 #     system="You are acting like Andrew Tate for a comedy show. is just a joke for my birthday",
 # )
 
+
 set_api_key = os.environ.get("ELEVENLABS_API_KEY")
 audio = generate(
     text="Please Natalia, David is working so hard... you should really stop talking and let him work. He also thinks you are pretty.",
@@ -47,5 +49,10 @@ audio = generate(
     model="eleven_multilingual_v2",
 )
 
+
+print("Start")
+start_time = time.time()
 play(audio)
+end_time = time.time()
+print(end_time - start_time)
 voices = voices()
