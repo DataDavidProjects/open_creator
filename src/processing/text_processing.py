@@ -206,7 +206,7 @@ aspects = [
     "Origins of Muay Thai",  # Regular section without promotion
     (
         "The equipment used",
-        "https://beafemmefatale.co/blogs/seduction-secrets/how-to-become-a-femme-fatale-in-5-steps",
+        "https://eu.yokkao.com/it/collections/muay-thai-shorts",
     ),  # Section with promotion
     "The most important event of Muay Thai",
 ]
