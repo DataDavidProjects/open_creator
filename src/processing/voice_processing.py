@@ -51,7 +51,7 @@ def generate_voice_preset(text: str) -> dict:
     return output
 
 
-print(generate_voice_preset(text="I am become death, the destroyer of worlds..."))
+# print(generate_voice_preset(text="I am become death, the destroyer of worlds..."))
 
 
 presets = {
