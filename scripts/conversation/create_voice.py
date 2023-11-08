@@ -2,14 +2,21 @@ import sys
 
 sys.path.append(".")
 
+import os
 import re
 import time
 
-import openai
 from dotenv import load_dotenv
 from elevenlabs import *
+from openai import OpenAI
 
 from src.processing.voice_processing import *
+
+# Load environment variables
+load_dotenv()
+api_key = os.environ.get("OPENAI_API_KEY")
+openaiclient = OpenAI(api_key=api_key)
+
 
 # Load environment variables
 load_dotenv()
@@ -19,7 +26,6 @@ api_key = os.environ.get("OPENAI_API_KEY")
 def create_caption(
     prompt: str, system: str = "You are an expesrt Social Media Manager"
 ) -> str:
-    openai.api_key = api_key
     payload = {
         "model": "gpt-3.5-turbo",
         "messages": [
@@ -28,8 +34,8 @@ def create_caption(
         ],
     }
 
-    response = openai.ChatCompletion.create(**payload)
-    caption = response["choices"][0]["message"]["content"]
+    response = openaiclient.chat.completions.create(**payload)
+    caption = response.choices[0].message.content
 
     # Remove the numbered bullet point from the start of the first caption
     caption = re.sub(r"^\d+\.\s*", "", caption)

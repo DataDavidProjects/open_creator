@@ -1,11 +1,12 @@
 import os
 
-import openai
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
+openaiclient = OpenAI(api_key=api_key)
 
 
 def generate_voice_preset(text: str) -> dict:
@@ -42,12 +43,12 @@ def generate_voice_preset(text: str) -> dict:
     }
 
     # Get the analyzed result from the chat model
-    response = openai.ChatCompletion.create(**payload)
+    response = openaiclient.chat.completions.create(**payload)
 
     # Assuming the chat model returns a dictionary-like string of settings, convert it to a dictionary
     # This part needs to be implemented according to the specific format of the output from the chat model
     # The code below is a placeholder and needs to be adapted to your actual output format
-    output = eval(response["choices"][0]["message"]["content"])
+    output = eval(response.choices[0].message["content"])
     return output
 
 

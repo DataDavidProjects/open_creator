@@ -36,14 +36,11 @@ aspects = [
     (
         "The equipment used",
         "https://eu.yokkao.com/it/collections/muay-thai-shorts",
-    ),  # Section with promotion
-    "The most important event of Muay Thai",
+    ),
 ]
 
 # Generate the main content, with promotions turned on
 main_content = blogger.generate_main_content(topic, aspects, promo_on=True)
-
-main_content = blogger.generate_main_content(topic, aspects)
 recap = blogger.generate_recap(topic)
 ending = blogger.generate_ending()
 

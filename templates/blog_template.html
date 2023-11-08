@@ -1,8 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
   </head>
   <body>
-    {{ content | safe }}
+    <h1>{{ title }}</h1>
+    {% for section in sections %}
+    <section>
+      <h2>{{ section.header }}</h2>
+      <p>{{ section.content }}</p>
+    </section>
+    {% endfor %}
   </body>
 </html>

@@ -1,7 +1,14 @@
+import os
 import random
 from typing import List, Tuple, Union
 
-import openai
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# Load environment variables
+load_dotenv()
+api_key = os.environ.get("OPENAI_API_KEY")
+openaiclient = OpenAI(api_key=api_key)  # Load environment variables
 
 
 class Blogger:
@@ -32,6 +39,7 @@ class Blogger:
         api_key: str,
         system: str = "You are an AI experienced in generating creative content for blogs",
         tone: str = "",
+        html: bool = True,
     ) -> None:
         """
         Initializes the Blogger with an API key and an optional system prompt.
@@ -42,7 +50,6 @@ class Blogger:
         self.api_key: str = api_key
         self.system: str = system
         self.tone: str = tone
-        openai.api_key = self.api_key
         self.keywords: List[str] = []
         self.main_content_sections: List[str] = []
 
@@ -57,8 +64,8 @@ class Blogger:
                 {"role": "user", "content": prompt_with_tone},
             ],
         }
-        response = openai.ChatCompletion.create(**payload)
-        return response["choices"][0]["message"]["content"]
+        response = openaiclient.chat.completions.create(**payload)
+        return response.choices[0].message.content
 
     def generate_keywords(self, topic: str) -> List[str]:
         # Generate SEO-friendly keywords for a given topic

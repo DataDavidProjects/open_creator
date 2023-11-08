@@ -5,19 +5,19 @@ sys.path.append(".")
 import os
 import re
 
-import openai
 import pandas as pd
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
+openaiclient = OpenAI(api_key=api_key)
 
 
 def create_caption(
     prompt: str, system: str = "You are an expert Social Media Manager for Pinterest"
 ) -> str:
-    openai.api_key = api_key
     payload = {
         "model": "gpt-3.5-turbo",
         "messages": [
@@ -26,8 +26,8 @@ def create_caption(
         ],
     }
 
-    response = openai.ChatCompletion.create(**payload)
-    caption = response["choices"][0]["message"]["content"]
+    response = openaiclient.chat.completions.create(**payload)
+    caption = response.choices[0].message.content
 
     # Remove the numbered bullet point from the start of the first caption
     caption = re.sub(r"^\d+\.\s*", "", caption)
