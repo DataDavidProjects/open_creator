@@ -26,7 +26,33 @@ blogger:
     template_file_path : "{}/templates/blog_template.html"
     output_file_path:  "{}/tables/blog.html" 
     prompts:
-      generate_keywords: ""
+      generate_keywords: |
+        Write 5 SEO keywords for a blog post about {}.
+
+      incorporate_keywords: |
+        Rewrite the following text to naturally include these keywords about {}: {}.
+
+      generate_title: |
+        Create a one line very short and engaging blog post title about {}.
+
+      generate_subtitle: |
+        Create a one line very short and interesting subtitle for a section of a blog post about {}, specifically focusing on {}.
+
+      generate_introduction: |
+        Write a one line short introduction for a blog post about {}. Write at most 4 lines.
+
+      generate_link_text: |
+        Create a short, engaging call-to-action link text related to '{}'.
+
+      generate_promo_context: |
+        Write a friendly and informative paragraph that provides value to the reader and naturally introduces a promotional link related to '{}'. Do not include the link URL in the AI-generated text.
+
+      generate_section: |
+        Write a short detailed section for a blog post about {} focusing on '{}'. You have a mandatory limit of 100 words of output text, it must be very short.
+
+      generate_ending: |
+        Write a compelling ending statement for a blog post about {} that includes a call to action for readers.
+
 
   hmtl_template: | 
       <!DOCTYPE html>

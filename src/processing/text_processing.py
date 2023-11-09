@@ -48,7 +48,7 @@ class Blogger:
 
         :param file_name: The base name of the HTML file to create (without the extension).
         """
-        html_template = config["blogger"]["hmtl_template"]
+        html_template = config["blogger"]["blog"]["hmtl_template"]
         # Write the HTML template to the specified file
         with open(f"{template_file_path}", "w") as file:
             file.write(html_template)
@@ -111,7 +111,8 @@ class Blogger:
 
     def generate_keywords(self, topic: str) -> List[str]:
         # Generate SEO-friendly keywords for a given topic
-        prompt = f"Write 5 SEO keywords for a blog post about {topic}."
+        prompt_template = config["blogger"]["blog"]["prompts"]["generate_keywords"]
+        prompt = prompt_template.format(topic)
         keywords_str: str = self.chat_completion(prompt)
         self.keywords = keywords_str.split(", ")
         return self.keywords
@@ -121,62 +122,78 @@ class Blogger:
         used_keywords: List[str] = random.sample(
             self.keywords, min(max_keywords, len(self.keywords))
         )
-        rewrite_prompt: str = f"""
-        Rewrite the following text to naturally include these keywords about {topic}: {', '.join(used_keywords)}.\n\n{text}
-        """
+
+        # Fetch the prompt template from the YAML configuration and format it with the topic and used keywords
+        prompt_template = config["blogger"]["blog"]["prompts"]["incorporate_keywords"]
+        rewrite_prompt = prompt_template.format(topic, ", ".join(used_keywords))
+
+        # Call the chat_completion method with the formatted prompt
         rewritten_text: str = self.chat_completion(rewrite_prompt)
+
+        # Return the rewritten text
         return rewritten_text
 
     def generate_title(self, topic: str) -> str:
         # Generate a title for the blog post about a given topic
         if not self.keywords:
             self.generate_keywords(topic)
-        prompt: str = f"""Create a one line very short and engaging blog post title about {topic}."""
-        title: str = self.chat_completion(prompt)
+
+        # Fetch the prompt template from the YAML configuration and format it with the topic
+        prompt_template = config["blogger"]["blog"]["prompts"]["generate_title"]
+        generate_title_prompt = prompt_template.format(topic)
+
+        # Call the chat_completion method with the formatted prompt
+        title: str = self.chat_completion(generate_title_prompt)
+
+        # Return the title with quotes removed
         return title.replace('"', "")
 
     def generate_subtitle(self, topic: str, aspect: str = "") -> str:
-        """
-        Generate a subtitle for the blog post section.
-
-        :param topic: The overall topic of the blog post.
-        :param aspect: The specific aspect of the topic for the section header. Optional.
-        :return: A string containing the subtitle (section header).
-        """
+        # Generate a subtitle for the blog post section.
         if not self.keywords:
             self.generate_keywords(topic)
 
-        # If an aspect is provided, use it in the prompt; otherwise, just focus on the topic
-        if aspect:
-            prompt = f"""
-            Create a one line very short and interesting subtitle for a section of a blog post about {topic}, specifically focusing on {aspect}.
-            """
-        else:
-            prompt = f"""
-            Create a one line very short and interesting subtitle for a blog post about {topic}.
-            Example output:
-            Unveiling the Majestic Burj Khalifa
-            """
+        # Fetch the prompt template from the YAML configuration
+        subtitle_prompt_template = config["blogger"]["blog"]["prompts"][
+            "generate_subtitle"
+        ]
 
-        subtitle = self.chat_completion(prompt)
+        # Check if an aspect is provided and format the prompt accordingly
+        if aspect:
+            generate_subtitle_prompt = subtitle_prompt_template.format(topic, aspect)
+        else:
+            # If no aspect is provided, the template expects two placeholders but we only have one,
+            # so we can pass the same topic twice.
+            generate_subtitle_prompt = subtitle_prompt_template.format(topic, topic)
+
+        # Call the chat_completion method with the formatted prompt
+        subtitle: str = self.chat_completion(generate_subtitle_prompt)
+
+        # Return the subtitle with quotes removed
         return subtitle.replace('"', "")
 
     def generate_introduction(self, topic: str) -> str:
-        # Generate an introduction for a blog post about a given topic
+        # Ensure keywords are generated for SEO purposes
         if not self.keywords:
-            self.generate_keywords(
-                topic
-            )  # Ensure keywords are generated for SEO purposes
-        prompt: str = f"""
-        Write a one line short introduction for a blog post about {topic}. Write at most 4 lines.
+            self.generate_keywords(topic)
 
-        Example of desired output about planning a vacation in Dubai with a luxurious style:
-        We understand your dedication and hard work. You've earned the vacation of your dreams. And when it comes to such a well-deserved getaway, you undoubtedly want an environment that matches your ambitions: stylish, luxurious, and exclusive. Whether you've pondered where to find like-minded travelers or simply been curious about the top destinations and hotels favored by the VIP crowd, we've got you covered. In this article, we'll unveil the sought-after locations and accommodations where the rich and famous make their mark.
-        
-        """
-        introduction: str = self.chat_completion(prompt)
+        # Fetch the prompt template from the YAML configuration
+        introduction_prompt_template = config["blogger"]["blog"]["prompts"][
+            "generate_introduction"
+        ]
+
+        # Format the prompt with the provided topic
+        generate_introduction_prompt = introduction_prompt_template.format(topic)
+
+        # Call the chat_completion method with the formatted prompt
+        introduction: str = self.chat_completion(generate_introduction_prompt)
+
         # Incorporate keywords into the introduction for SEO optimization
-        return self.incorporate_keywords(introduction, topic, max_keywords=3)
+        seo_optimized_introduction = self.incorporate_keywords(
+            introduction, topic, max_keywords=3
+        )
+
+        return seo_optimized_introduction
 
     def generate_link_text(self, aspect: str) -> str:
         """
@@ -185,14 +202,19 @@ class Blogger:
         :param aspect: The specific aspect of the topic to which the promotional link is related.
         :return: A string containing the short link text.
         """
-        prompt = f"""Create a short, engaging call-to-action link text related to '{aspect}'.
+        # Fetch the prompt template from the YAML configuration
+        generate_link_text_prompt_template = config["blogger"]["blog"]["prompts"][
+            "generate_link_text"
+        ]
 
-        Example of output
-        Deluxe Burji Khalifa Rooms: https://www.anantara.com/en/downtown-dubai/rooms/deluxe-burj-khalifa-view-room,
+        # Format the prompt with the provided aspect
+        generate_link_text_prompt = generate_link_text_prompt_template.format(aspect)
 
-        """
-        link_text = self.chat_completion(prompt)
-        return link_text.strip()  # Ensure there's no leading/trailing whitespace
+        # Call the chat_completion method with the formatted prompt
+        link_text = self.chat_completion(generate_link_text_prompt)
+
+        # Return the link text with any leading/trailing whitespace removed
+        return link_text.strip()
 
     def generate_promo_context(self, aspect: str, promo_link: str) -> Dict[str, str]:
         """
@@ -202,16 +224,23 @@ class Blogger:
         :param promo_link: The URL for the promotional link to be included in the paragraph.
         :return: A dictionary containing the promotional content, link, and short link text.
         """
-        context_prompt = f"""
-            Write a friendly and informative paragraph that provides value to the reader and naturally.
-            introduces a promotional link related to '{aspect}'. The link is {promo_link}. "
-            Write at most 2 lines and do not write the link in the output."""
-        promo_context = self.chat_completion(context_prompt)
+        # Fetch the prompt template from the YAML configuration
+        generate_promo_context_prompt_template = config["blogger"]["blog"]["prompts"][
+            "generate_promo_context"
+        ]
 
-        # Use the new method to generate a concise link text
+        # Format the prompt with the provided aspect and promo link
+        generate_promo_context_prompt = generate_promo_context_prompt_template.format(
+            aspect, promo_link
+        )
+
+        # Call the chat_completion method with the formatted prompt
+        promo_context = self.chat_completion(generate_promo_context_prompt)
+
+        # Use the generate_link_text method to generate a concise link text
         link_text = self.generate_link_text(aspect)
 
-        # Structure it in a dictionary
+        # Structure the promotional content, link, and link text in a dictionary
         promo_dict = {
             "content": promo_context,
             "link": promo_link,
@@ -235,18 +264,22 @@ class Blogger:
         if not self.keywords:
             self.generate_keywords(topic)
 
-        # Generate the header and content for the section
+        # Generate the header for the section
         header = self.generate_subtitle(aspect)
-        prompt = f"""Write a short detailed section for a blog post about {topic} focusing on '{aspect}'.
-        You have a mandatory limit of 100 words of output text , it must be very short.
-        Example of desired output with topic Dubai with aspect Skyscraper and Shopping:
-        Dubai, the city of superlatives, is a playground for the world's elite. From towering skyscrapers to luxurious shopping and world-class dining, this city in the United Arab Emirates epitomizes opulence. Dubai is where dreams are made real, and it's the destination of choice for those who crave extravagance in their travels. To fully embrace the Dubai experience, consider a stay at The Palm Dubai Resort. This exquisite resort mirrors the city's grandeur, offering pristine beaches, stunning views, and impeccable service.
-        """
-        content = self.chat_completion(prompt)
-        paragraphs = content.split(
-            "\n\n"
-        )  # Assuming paragraphs are separated by two newlines
 
+        # Fetch the prompt template from the YAML configuration
+        generate_section_prompt_template = config["blogger"]["blog"]["prompts"][
+            "generate_section"
+        ]
+
+        # Format the prompt with the provided topic and aspect
+        generate_section_prompt = generate_section_prompt_template.format(topic, aspect)
+
+        # Call the chat_completion method with the formatted prompt
+        content = self.chat_completion(generate_section_prompt)
+        paragraphs = content.split("\n\n")  # Split content into paragraphs
+
+        # Construct the section with headers and paragraphs
         structured_section = {
             "header": header,
             "paragraphs": [
@@ -254,12 +287,9 @@ class Blogger:
             ],
         }
 
-        # If a promo link is provided, generate and add the promotional context
+        # If a promo link is provided, generate the promotional content
         if promo_link:
             promo_content = self.generate_promo_context(aspect, promo_link)
-            promo_content["link_text"] = self.generate_link_text(
-                aspect
-            )  # Generate a concise link text
             structured_section["promo"] = promo_content
 
         return structured_section
@@ -284,17 +314,17 @@ class Blogger:
         )  # This will hold structured section data for HTML rendering
 
         for aspect in aspects:
-            if isinstance(aspect, tuple) and promo_on:
-                # Separate the aspect text and the promo link
-                aspect_text, promo_link = aspect
-                # Generate a section with a promotional context
-                section_content = self.generate_section(topic, aspect_text, promo_link)
-            else:
-                # If the aspect is not a tuple or promo is off, treat it as a regular section
-                aspect_text = (
-                    aspect if isinstance(aspect, str) else aspect[0]
-                )  # Ensure aspect_text is a string
-                section_content = self.generate_section(topic, aspect_text)
+            # Separate the aspect text and the promo link if it's a tuple and promo is on
+            aspect_text, promo_link = (
+                (aspect if isinstance(aspect, tuple) else (aspect, ""))
+                if promo_on
+                else (aspect, "")
+            )
+
+            # Generate a section with a promotional context if a promo link is provided, else a regular section
+            section_content = self.generate_section(
+                topic, aspect_text, promo_link if promo_on and promo_link else ""
+            )
 
             # Add the structured section content to the list
             structured_content_sections.append(section_content)
@@ -315,29 +345,29 @@ class Blogger:
         :return: A dictionary containing the ending statement and promotional links.
         """
 
+        # Determine the general aspect of the blog post for the ending statement
         aspect = (
             main_content_sections[0]["header"] if main_content_sections else "General"
         )
 
-        # Generate a specific ending prompt that includes the aspect of the blog
-        ending_prompt = (
-            f"Write a compelling ending statement for a blog post about {aspect} "
-            f"that includes a call to action for readers."
+        # Fetch the ending prompt format from the config and fill it with the aspect
+        ending_prompt = config["blogger"]["blog"]["prompts"]["generate_ending"].format(
+            aspect
         )
+
+        # Obtain the AI-generated ending content
         ending_content = self.chat_completion(ending_prompt)
 
-        # Use generate_link_text to create link text for each promotional link
+        # Generate link text for each promotional link using the aspect
         promo_links_list = [
             {
                 "href": link.get("link", ""),
-                "text": self.generate_link_text(
-                    aspect
-                ),  # Use the aspect to generate relevant link text
+                "text": self.generate_link_text(aspect),
             }
             for link in promo_links
         ]
 
-        # Structure the ending content and promotional links for the template rendering.
+        # Compile the ending structure for template rendering
         ending_structure = {"content": ending_content, "promo_links": promo_links_list}
 
         return ending_structure
