@@ -164,7 +164,7 @@ class Blogger:
         else:
             # If no aspect is provided, the template expects two placeholders but we only have one,
             # so we can pass the same topic twice.
-            generate_subtitle_prompt = subtitle_prompt_template.format(topic, topic)
+            generate_subtitle_prompt = subtitle_prompt_template.format(topic, "")
 
         # Call the chat_completion method with the formatted prompt
         subtitle: str = self.chat_completion(generate_subtitle_prompt)
@@ -217,30 +217,20 @@ class Blogger:
         return link_text.strip()
 
     def generate_promo_context(self, aspect: str, promo_link: str) -> Dict[str, str]:
-        """
-        Generate a promotional context paragraph and a short link text for the given aspect and link.
-
-        :param aspect: The specific aspect of the topic to which the promotional link is related.
-        :param promo_link: The URL for the promotional link to be included in the paragraph.
-        :return: A dictionary containing the promotional content, link, and short link text.
-        """
-        # Fetch the prompt template from the YAML configuration
-        generate_promo_context_prompt_template = config["blogger"]["blog"]["prompts"][
+        print(promo_link)
+        context_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_promo_context"
         ]
+        context_prompt = context_prompt_template.format(aspect, promo_link)
+        promo_context = self.chat_completion(context_prompt)
 
-        # Format the prompt with the provided aspect and promo link
-        generate_promo_context_prompt = generate_promo_context_prompt_template.format(
-            aspect, promo_link
-        )
+        link_text_template = config["blogger"]["blog"]["prompts"]["generate_link_text"]
+        link_text = self.chat_completion(link_text_template.format(aspect))
 
-        # Call the chat_completion method with the formatted prompt
-        promo_context = self.chat_completion(generate_promo_context_prompt)
+        # Debugging statements
+        print(f"Promo context for '{aspect}': {promo_context}")
+        print(f"Link text for '{aspect}': {link_text}")
 
-        # Use the generate_link_text method to generate a concise link text
-        link_text = self.generate_link_text(aspect)
-
-        # Structure the promotional content, link, and link text in a dictionary
         promo_dict = {
             "content": promo_context,
             "link": promo_link,
@@ -252,34 +242,18 @@ class Blogger:
     def generate_section(
         self, topic: str, aspect: str, promo_link: str = ""
     ) -> Dict[str, Union[str, List[str], Dict[str, str]]]:
-        """
-        Generate a detailed section for the blog post about a given aspect of the topic.
-        Optionally includes a promotional link.
-
-        :param topic: The overall topic of the blog post.
-        :param aspect: The specific aspect of the topic for the section.
-        :param promo_link: The optional URL for the promotional link to be included.
-        :return: A dictionary with structured section data, including the promotional content if provided.
-        """
         if not self.keywords:
             self.generate_keywords(topic)
 
-        # Generate the header for the section
         header = self.generate_subtitle(aspect)
 
-        # Fetch the prompt template from the YAML configuration
         generate_section_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_section"
         ]
-
-        # Format the prompt with the provided topic and aspect
         generate_section_prompt = generate_section_prompt_template.format(topic, aspect)
-
-        # Call the chat_completion method with the formatted prompt
         content = self.chat_completion(generate_section_prompt)
-        paragraphs = content.split("\n\n")  # Split content into paragraphs
+        paragraphs = content.split("\n\n")
 
-        # Construct the section with headers and paragraphs
         structured_section = {
             "header": header,
             "paragraphs": [
@@ -287,10 +261,14 @@ class Blogger:
             ],
         }
 
-        # If a promo link is provided, generate the promotional content
         if promo_link:
             promo_content = self.generate_promo_context(aspect, promo_link)
-            structured_section["promo"] = promo_content
+            if promo_content:  # Check if promo_content is not None or empty
+                structured_section["promo"] = promo_content
+            else:
+                print(
+                    f"Warning: Promo content for aspect '{aspect}' with link '{promo_link}' is empty."
+                )
 
         return structured_section
 

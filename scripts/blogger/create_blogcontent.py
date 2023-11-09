@@ -41,12 +41,26 @@ title = blogger.generate_title(topic)
 
 # Intro
 introduction = blogger.generate_introduction(topic)
-aspects = config["blogger"]["blog"]["aspects"]
+
+
+# Fetch Yaml aspect and Promotion Links.
+aspects_data = config["blogger"]["blog"]["aspects"]
+aspects = []
+for item in aspects_data:
+    # Check if item is a list with two elements (interpreted as a tuple)
+    if isinstance(item, list) and len(item) == 2:
+        aspect_tuple = tuple(item)  # Convert the list to a tuple
+        aspects.append(aspect_tuple)
+    # If the item is a single string (just a topic without a promo link)
+    elif isinstance(item, str):
+        aspects.append(item)
+
+
+print(aspects)
 # Generate the main content, with promotions turned on
 main_content_sections = blogger.generate_main_content(topic, aspects, promo_on=True)
 
 
-print(main_content_sections)
 # Promotion links
 promo_links = [
     section.get("promo", {}).get("link", "")
