@@ -15,7 +15,7 @@ from src.processing.voice_processing import *
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
-openaiclient = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)
 
 
 # Load environment variables
@@ -34,7 +34,7 @@ def create_caption(
         ],
     }
 
-    response = openaiclient.chat.completions.create(**payload)
+    response = openai_client.chat.completions.create(**payload)
     caption = response.choices[0].message.content
 
     # Remove the numbered bullet point from the start of the first caption
@@ -49,12 +49,17 @@ message = create_caption(
 )
 
 
-set_api_key = os.environ.get("ELEVENLABS_API_KEY")
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY")
+
+set_api_key(ELEVENLABS_API_KEY)
+
 audio = generate(
-    text=message,
+    text="You should stop calling me or i will spank your dad.",
     voice=Voice(
-        voice_id="zcAOhNBS3c14rBihAFp1",
-        settings=VoiceSettings(**presets["elearning_tutor"]),
+        voice_id="XB0fDUnXU5powFXDhCwa",
+        settings=VoiceSettings(
+            stability=0.61, similarity_boost=0.5, style=0.0, use_speaker_boost=True
+        ),
     ),
     model="eleven_multilingual_v2",
 )
@@ -66,3 +71,4 @@ play(audio)
 end_time = time.time()
 print(end_time - start_time)
 voices = voices()
+print(voices)

@@ -8,12 +8,12 @@ from PIL import Image
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
-openaiclient = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)
 
 
-# openaiclient = OpenAI(api_key=api_key)
+# openai_client = OpenAI(api_key=api_key)
 # speech_file_path = Path(__file__).parent / "speech.mp3"
-# response = openaiclient.audio.speech.create(
+# response = openai_client.audio.speech.create(
 #     model="tts-1-hd",
 #     voice="echo",
 #     input="Aint no sunshine when she is gone ...",
@@ -22,7 +22,7 @@ openaiclient = OpenAI(api_key=api_key)
 # response.stream_to_file(speech_file_path)
 
 
-# response = openaiclient.images.generate(
+# response = openai_client.images.generate(
 #     model="dall-e-3",
 #     prompt=prompt,
 #     size="1024x1024",

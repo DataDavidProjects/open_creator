@@ -1,12 +1,14 @@
 import os
 
+import pandas as pd
 from dotenv import load_dotenv
+from elevenlabs import *
 from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
-openaiclient = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)
 
 
 def generate_voice_preset(text: str) -> dict:
@@ -43,7 +45,7 @@ def generate_voice_preset(text: str) -> dict:
     }
 
     # Get the analyzed result from the chat model
-    response = openaiclient.chat.completions.create(**payload)
+    response = openai_client.chat.completions.create(**payload)
 
     # Assuming the chat model returns a dictionary-like string of settings, convert it to a dictionary
     # This part needs to be implemented according to the specific format of the output from the chat model
@@ -178,21 +180,23 @@ presets = {
     },
 }
 
+voices = voices()
+print(voices)
+# Convert the list of Voice instances to a list of dictionaries including expanding the labels
+voice_data = []
+for voice in voices:
+    # Start with the non-dict attributes
+    voice_dict = {
+        "voice_id": voice.voice_id,
+        "name": voice.name,
+        "category": voice.category,
+        "description": voice.description,
+        "preview_url": voice.preview_url,
+    }
+    # Add the label attributes
+    voice_dict.update(voice.labels)
+    voice_data.append(voice_dict)
 
-# # Convert the list of Voice instances to a list of dictionaries including expanding the labels
-# voice_data = []
-# for voice in voices:
-#     # Start with the non-dict attributes
-#     voice_dict = {
-#         "voice_id": voice.voice_id,
-#         "name": voice.name,
-#         "category": voice.category,
-#         "description": voice.description,
-#         "preview_url": voice.preview_url,
-#     }
-#     # Add the label attributes
-#     voice_dict.update(voice.labels)
-#     voice_data.append(voice_dict)
-
-# # Create a DataFrame
-# df_voices = pd.DataFrame(voice_data)
+# Create a DataFrame
+df_voices = pd.DataFrame(voice_data)
+df_voices.to_csv("voices.csv", index=False)

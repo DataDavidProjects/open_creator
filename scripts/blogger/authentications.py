@@ -15,7 +15,7 @@ GOOGLE_BLOGSPOT_ID = os.environ.get("GOOGLE_BLOGSPOT_ID")
 CLIENT_SECRETS_FILE = "scripts/credentials.json"
 
 
-def create_blog_post(blog_id, title, content, token_json_file):
+def create_blog_post(blog_id, title, content, token_json_file, draft=True):
     # Load the saved credentials from token.json
     creds = None
     if os.path.exists(token_json_file):
@@ -43,6 +43,7 @@ def create_blog_post(blog_id, title, content, token_json_file):
         "blog": {"id": blog_id},
         "title": title,
         "content": content,
+        "isDraft": draft,
     }
 
     # Make the POST request to create a new blog post

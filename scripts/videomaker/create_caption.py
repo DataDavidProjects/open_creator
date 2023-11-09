@@ -12,7 +12,7 @@ from openai import OpenAI
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
-openaiclient = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)
 
 
 def create_caption(
@@ -26,7 +26,7 @@ def create_caption(
         ],
     }
 
-    response = openaiclient.chat.completions.create(**payload)
+    response = openai_client.chat.completions.create(**payload)
     caption = response.choices[0].message.content
 
     # Remove the numbered bullet point from the start of the first caption
