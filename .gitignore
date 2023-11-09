@@ -6,7 +6,7 @@ fonts/*
 .vscode/
 
 scripts/blogger/blog.html
-templates/blog_template.html
+
 
 .csv
 
