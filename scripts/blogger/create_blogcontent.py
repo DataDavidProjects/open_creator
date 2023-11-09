@@ -1,4 +1,3 @@
-import json
 import sys
 
 sys.path.append(".")
@@ -10,6 +9,12 @@ import time
 from dotenv import load_dotenv
 
 from src.processing.text_processing import Blogger
+from src.utils.file_operations import load_config
+
+# Config Project files
+project_name = "aesthetic_destinations"
+config = load_config(project_name)
+project_path = f"src/assets/data/{project_name}/blog"
 
 # time start
 start_time = time.time()
@@ -19,47 +24,30 @@ load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
 
 # Initialize the Blogger class with the API key and specify the tone and template path
-template_file_path = (
-    "./templates/blog_template.html"  # Make sure to use your actual template path
+template_file_path = config["blogger"]["blog"]["template_file_path"].format(
+    project_path
 )
-output_file_path = (
-    "scripts/blogger/blog.html"  # The path where you want to save the rendered HTML
-)
+output_file_path = config["blogger"]["blog"]["output_file_path"].format(project_path)
 
-blogger = Blogger(api_key, tone="Friendly", template_file_path=template_file_path)
-topic = "Dubai"
+# Init Blogger
+blogger = Blogger(
+    api_key,
+    tone=config["blogger"]["blog"]["tone"],
+    template_file_path=template_file_path,
+)
+topic = config["blogger"]["blog"]["topic"]
+# Title
 title = blogger.generate_title(topic)
 
 # Intro
 introduction = blogger.generate_introduction(topic)
-aspects = [
-    (
-        """
-        Suites in Dubai 
-        Luxurious spaces with private balconies overlooking the unrivalled cityscape of Dubai and the iconic Burj Khalifa tower. 
-        """,
-        "https://www.anantara.com/en/downtown-dubai/rooms/anantara-burj-khalifa-view-suite",
-    ),
-    (
-        "Burj Khalifa",  # Section with a promotion
-        "https://www.anantara.com/en/downtown-dubai/rooms/deluxe-burj-khalifa-view-room",
-    ),
-    # Add more sections as needed
-]
-
+aspects = config["blogger"]["blog"]["aspects"]
 # Generate the main content, with promotions turned on
 main_content_sections = blogger.generate_main_content(topic, aspects, promo_on=True)
 
 
-# Save the checkpoint data in a JSON file
-
-checkpoint_filename = "./checkpoint.json"
-
-with open(checkpoint_filename, "w") as f:
-    json.dump(main_content_sections, f, indent=4)
-
-
 print(main_content_sections)
+# Promotion links
 promo_links = [
     section.get("promo", {}).get("link", "")
     for section in main_content_sections

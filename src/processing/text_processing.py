@@ -7,6 +7,13 @@ from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from openai import OpenAI
 
+from src.utils.file_operations import load_config
+
+# Config Project files
+project_name = "aesthetic_destinations"
+config = load_config(project_name)
+
+
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
@@ -41,176 +48,7 @@ class Blogger:
 
         :param file_name: The base name of the HTML file to create (without the extension).
         """
-        html_template = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ title }}</title>
-</head>
-<body
-  style="
-    font-family: 'Georgia', serif;
-    margin: 0;
-    padding: 0;
-    color: #333;
-    background-color: #f4f4f4;
-  "
->
-  <h2
-    style="
-      text-align: center;
-      font-size: 2em;
-      margin: 1em 0;
-      color: #2a5d84;
-    "
-  >
-    {{ title }}
-  </h2>
-
-  {% for section in sections %}
-  <section
-    style="
-      background-color: white;
-      padding: 2em;
-      margin-bottom: 1em;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    "
-  >
-    <h4
-      style="
-        font-family: 'Arial', sans-serif;
-        font-size: 1.5em;
-        font-weight: bold;
-        color: #2a5d84;
-        margin-bottom: 0.5em;
-      "
-    >
-      {{ section.header }}
-    </h4>
-
-    {% for paragraph in section.paragraphs %}
-    <p
-      style="
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 300;
-        text-align: justify;
-        line-height: 1.6;
-        font-size: 0.9em;
-        color: #4a4a4a;
-        margin-bottom: 1em;
-      "
-    >
-      {{ paragraph }}
-    </p>
-    {% endfor %}
-
-    {% if section.promo %}
-    <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
-      <a
-        href="{{ section.promo.link }}"
-        style="margin-left: 1em; margin-right: 1em"
-      >
-        <img
-          border="0"
-          src="{{ section.promo.image_url }}"
-          alt="{{ section.promo.alt_text }}"
-          style="height: auto; max-width: 100%; border-radius: 8px"
-        />
-      </a>
-      <p style="font-size: 1em; font-weight: bold; margin-top: 1em">
-        <a
-          href="{{ section.promo.link }}"
-          style="
-            color: #2a5d84;
-            text-decoration: none;
-            background-color: #eef2f7;
-            padding: 0.4em 0.8em;
-            border-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-          "
-        >
-          {{ section.promo.link_text }}
-        </a>
-      </p>
-    </div>
-    {% endif %}
-  </section>
-  {% endfor %}
-
-  <div
-    id="conclusion"
-    style="
-      background-color: white;
-      padding: 2em;
-      margin-top: 2em;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    "
-  >
-    <h2
-      style="
-        font-size: 2em;
-        font-weight: bold;
-        color: #2a5d84;
-        margin-bottom: 0.5em;
-      "
-    >
-      Conclusion
-    </h2>
-    <p
-      style="
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 300;
-        text-align: justify;
-        line-height: 1.6;
-        font-size: 0.9em;
-        color: #4a4a4a;
-      "
-    >
-      {{ ending.content }}
-    </p>
-
-    {% if ending.promo_links %}
-    <div class="promo-links" style="margin-top: 2em">
-      <h4
-        style="
-          font-size: 1.5em;
-          font-weight: bold;
-          color: #2a5d84;
-          margin-bottom: 0.5em;
-        "
-      >
-        Promotions and Rooms
-      </h4>
-      <ul style="list-style: none; padding: 0">
-        {% for promo_link in ending.promo_links %}
-        <li style="margin-bottom: 1em">
-          <a
-            href="{{ promo_link.href }}"
-            style="
-              color: #2a5d84;
-              text-decoration: none;
-              background-color: #eef2f7;
-              padding: 0.4em 0.8em;
-              border-radius: 4px;
-              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-              font-size: 1em;
-            "
-          >
-            {{ promo_link.text }}
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-  </div>
-</body>
-</html>
-
-
-        """
+        html_template = config["blogger"]["hmtl_template"]
         # Write the HTML template to the specified file
         with open(f"{template_file_path}", "w") as file:
             file.write(html_template)
@@ -310,9 +148,15 @@ class Blogger:
 
         # If an aspect is provided, use it in the prompt; otherwise, just focus on the topic
         if aspect:
-            prompt = f"Create a one line very short and interesting subtitle for a section of a blog post about {topic}, specifically focusing on {aspect}."
+            prompt = f"""
+            Create a one line very short and interesting subtitle for a section of a blog post about {topic}, specifically focusing on {aspect}.
+            """
         else:
-            prompt = f"Create a one line very short and interesting subtitle for a blog post about {topic}."
+            prompt = f"""
+            Create a one line very short and interesting subtitle for a blog post about {topic}.
+            Example output:
+            Unveiling the Majestic Burj Khalifa
+            """
 
         subtitle = self.chat_completion(prompt)
         return subtitle.replace('"', "")

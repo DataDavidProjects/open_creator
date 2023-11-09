@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append(".")
+
 import argparse
 import os
 from typing import List
@@ -34,7 +38,7 @@ def main():
         "--platforms",
         nargs="+",
         type=str,
-        default=["pinterest", "tiktok", "instagram"],
+        default=["pinterest", "tiktok", "instagram", "blog"],
         help="List of social media platforms",
     )
     args = parser.parse_args()
