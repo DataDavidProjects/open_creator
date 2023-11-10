@@ -59,6 +59,104 @@ blogger:
 
   hmtl_template: |
 
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ title }}</title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          #blog {
+            background: snow;
+            font-family: "Montserrat", sans-serif;
+            text-align: justify;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 5%;
+          }
+
+          h2 {
+            text-align: center;
+            font-size: 1.5em;
+          }
+
+          h4 {
+            text-align: center;
+            font-size: 1.2em;
+          }
+
+          p {
+            font-size: 0.9em;
+          }
+
+          .promolink {
+            background-color: #e0e0e0;
+            color: #333333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2%;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+            transition: transform 0.3s, background-color 0.3s, color 0.3s;
+          }
+
+          .promolink:hover {
+            transform: scale(1.1);
+            background-color: #cfb53b;
+            color: #ffffff;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="blog">
+          <section>
+            <h2>{{ title }}</h2>
+            <p>{{ introduction }}</p>
+            {% if cover.image_url %}
+            <img src="{{ cover.image_url }}" alt="cover" />
+            {% endif %}
+          </section>
+          {% for section in sections %}
+          <section>
+            <h4>{{ section.header }}</h4>
+            {% if section.image_url %}
+            <img src="{{ section.image_url }}" alt="{{ section.header }}" />
+            {% endif %} {% for paragraph in section.paragraphs %}
+            <p>{{ paragraph }}</p>
+            {% endfor %} {% if section.promo %}
+            <div>
+              <a href="{{ section.promo.link }}" class="promolink">
+                {{ section.promo.link_text }}
+              </a>
+            </div>
+            {% endif %}
+          </section>
+          {% endfor %}
+          <div>
+            <h2>Conclusion</h2>
+            <p>{{ ending.content }}</p>
+            {% if ending.promo_links %}
+            <div>
+              <h4>Promotions and Rooms</h4>
+              <ul>
+                {% for promo_link in ending.promo_links %}
+                <li>
+                  <a href="{{ promo_link.href }}" class="promolink">
+                    {{ promo_link.text }}
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </body>
+    </html>
+
 anantara:
   destinations:
     Africa:
