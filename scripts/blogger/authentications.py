@@ -49,18 +49,3 @@ def create_blog_post(blog_id, title, content, token_json_file, draft=True):
     # Make the POST request to create a new blog post
     response = requests.post(url, headers=headers, json=data)
     return response
-
-
-# # The scope for the Blogger API
-# SCOPES = ["https://www.googleapis.com/auth/blogger"]
-
-# # Create the flow using the client secrets file and the scopes
-# flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
-
-# # Run the flow to get the credentials
-# # Depending on the library version, this might be run_local_server() or run_desktop()
-# flow.run_local_server()
-
-# # Save the credentials for the next run
-# with open("token.json", "w") as token:
-#     token.write(flow.credentials.to_json())

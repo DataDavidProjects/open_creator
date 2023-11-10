@@ -217,7 +217,6 @@ class Blogger:
         return link_text.strip()
 
     def generate_promo_context(self, aspect: str, promo_link: str) -> Dict[str, str]:
-        print(promo_link)
         context_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_promo_context"
         ]
@@ -226,10 +225,6 @@ class Blogger:
 
         link_text_template = config["blogger"]["blog"]["prompts"]["generate_link_text"]
         link_text = self.chat_completion(link_text_template.format(aspect))
-
-        # Debugging statements
-        print(f"Promo context for '{aspect}': {promo_context}")
-        print(f"Link text for '{aspect}': {link_text}")
 
         promo_dict = {
             "content": promo_context,
@@ -311,17 +306,31 @@ class Blogger:
 
     def generate_ending(
         self,
-        promo_links: List[Dict[str, str]],
         main_content_sections: List[Dict[str, Any]],
+        extra_links: List[Dict[str, str]] = None,
     ) -> Dict[str, Any]:
         """
         Generate an ending statement for the blog post that includes a call to action,
-        taking into account the main content of the blog to generate a relevant ending.
+        taking into account the main content of the blog and any extra promotional links.
 
-        :param promo_links: A list of dictionaries, each containing a promotional link and its text.
         :param main_content_sections: The main content sections of the blog to infer the overall aspect.
+        :param extra_links: Additional promotional links to be included in the ending.
         :return: A dictionary containing the ending statement and promotional links.
         """
+
+        # Extract promotional links from the main content sections
+        promo_links_list = [
+            {
+                "href": section.get("promo", {}).get("link", ""),
+                "text": section.get("promo", {}).get("link_text", "Learn more"),
+            }
+            for section in main_content_sections
+            if section.get("promo")
+        ]
+
+        # Add any extra links provided
+        if extra_links:
+            promo_links_list.extend(extra_links)
 
         # Determine the general aspect of the blog post for the ending statement
         aspect = (
@@ -335,15 +344,6 @@ class Blogger:
 
         # Obtain the AI-generated ending content
         ending_content = self.chat_completion(ending_prompt)
-
-        # Generate link text for each promotional link using the aspect
-        promo_links_list = [
-            {
-                "href": link.get("link", ""),
-                "text": self.generate_link_text(aspect),
-            }
-            for link in promo_links
-        ]
 
         # Compile the ending structure for template rendering
         ending_structure = {"content": ending_content, "promo_links": promo_links_list}
