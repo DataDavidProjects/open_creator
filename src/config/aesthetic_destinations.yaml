@@ -53,6 +53,8 @@ blogger:
         Write a short detailed section for a blog post about {} focusing on '{}'. 
         You have a mandatory limit of 100 words of output text, it must be very short.
         If there are links you should not remove them.
+        Do not say welcome and do not introduce yourself.
+        Do not make introduction and get to the point.
 
       generate_ending: |
         Write a compelling ending statement for a blog post about {} that includes a call to action for readers.

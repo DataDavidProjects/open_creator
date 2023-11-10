@@ -77,15 +77,17 @@ extra_promo_links = config["blogger"]["blog"].get("extra_promo_links", [])
 ending_info = blogger.generate_ending(main_content_sections, extra_promo_links)
 
 # Fetch images from FIREBASE
-n_sections = 4
-image_urls = list_files_in_folder(f"Blog/{project_name}/")[:n_sections]
+n_sections = 5
+image_urls = list_files_in_folder(f"Blog/{project_name}/")
+print(image_urls)
 # Cover image temporarey set as first image of blog storage in firebase
 cover = image_urls[0]
 # Insert Images
 for section, image_url in zip_longest(
     main_content_sections, image_urls, fillvalue=None
 ):
-    section["image_url"] = image_url
+    if section is not None:
+        section["image_url"] = image_url
 
 
 # Structure the blog content for rendering
@@ -97,6 +99,7 @@ blog_content = {
     "ending": ending_info,
 }
 
+print(blog_content)
 # Render the blog post and write it to an HTML file
 blogger.render_blog_post(blog_content, template_file_path, output_file_path)
 

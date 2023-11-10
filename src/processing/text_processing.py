@@ -26,7 +26,7 @@ class Blogger:
         api_key: str,
         system: str = """
         You are an AI experienced in generating creative content for blogs.
-        Do not introduce yourself and get to the point.""",
+        Do not say welcome to or introduce yourself, and get to the point.""",
         tone: str = "",
         template_file_path: str = "./blog_template.html",
     ) -> None:
