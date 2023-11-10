@@ -8,7 +8,7 @@ image_processing:
 blogger:
   blog:
     topic: "Dubai"
-    tone: "professional travel agency tone"
+    tone: "professional and concise"
     aspects:
       - - Suites in Dubai
         - https://www.anantara.com/en/downtown-dubai/rooms/anantara-burj-khalifa-view-suite
