@@ -61,6 +61,7 @@ class Blogger:
         html_content = template.render(
             title=blog_content["title"],
             introduction=blog_content["introduction"],
+            cover=blog_content["cover"],
             sections=blog_content["sections"],
             ending=blog_content["ending"],
         )

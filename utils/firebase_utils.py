@@ -20,16 +20,38 @@ def init_firebase_storage(project_name="aesthetic_destinations"):
     cred = credentials.Certificate("scripts/firebase.json")
     firebase_admin.initialize_app(
         cred,
-        {"storageBucket": f"{GOOGLE_FIREBASE_BUCKET}/Blog/{project_name}"},
+        {"storageBucket": GOOGLE_FIREBASE_BUCKET},
     )
     return None
 
 
 def upload_firebase_storage(local_file, cloud_file):
+    if not firebase_admin._apps:
+        init_firebase_storage()
+
     bucket = storage.bucket()
     blob = bucket.blob(cloud_file)
     blob.upload_from_filename(local_file)
     return blob.public_url
+
+
+def list_files_in_folder(folder_path=None):
+    if not firebase_admin._apps:
+        init_firebase_storage()
+
+    bucket = storage.bucket()
+    blobs = bucket.list_blobs(
+        prefix=folder_path
+    )  # Add delimiter="/" to list only immediate children
+    urls = []
+
+    for blob in blobs:
+        if blob.name.endswith("/"):  # Skip directories
+            continue
+        blob.make_public()  # Make sure the file is publicly accessible
+        urls.append(blob.public_url)
+
+    return urls
 
 
 # --------------------------------------------------------------------------#

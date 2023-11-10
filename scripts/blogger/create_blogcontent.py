@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 from src.processing.text_processing import Blogger
 from src.utils.file_operations import load_config
+from utils.firebase_utils import list_files_in_folder
 
 # Config Project files
 project_name = "aesthetic_destinations"
@@ -20,6 +21,7 @@ project_path = f"src/assets/data/{project_name}/blog"
 # Load environment variables
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
+
 
 # time start
 start_time = time.time()
@@ -74,16 +76,11 @@ extra_promo_links = config["blogger"]["blog"].get("extra_promo_links", [])
 # Generate the recap and ending, using the main content sections to inform the promo link text generation and the ending content
 ending_info = blogger.generate_ending(main_content_sections, extra_promo_links)
 
-
-# Fetch Images path and urls from Yaml
-images = [
-    pic
-    for pic in os.listdir(config["blogger"]["blog"]["images_path"].format(project_path))
-]
-# Get the mediablogger from path Yaml  IMAGES MUST HAVE SAME NAME AND BE IN MEDIABLOGGER
-image_urls = [
-    "https://firebasestorage.googleapis.com/v0/b/opencreator-1699308232742.appspot.com/o/Blog%2Faesthetic_destinations%2Faesthetic_destinations_logo_light.png?alt=media&token=4c52d11a-e9ab-4391-b158-7270cc22d8e3"
-]
+# Fetch images from FIREBASE
+n_sections = 4
+image_urls = list_files_in_folder(f"Blog/{project_name}/")[:n_sections]
+# Cover image temporarey set as first image of blog storage in firebase
+cover = image_urls[0]
 # Insert Images
 for section, image_url in zip_longest(
     main_content_sections, image_urls, fillvalue=None
@@ -94,6 +91,7 @@ for section, image_url in zip_longest(
 # Structure the blog content for rendering
 blog_content = {
     "title": title,
+    "cover": cover,
     "introduction": introduction,
     "sections": main_content_sections,
     "ending": ending_info,
