@@ -82,7 +82,7 @@ images = [
 ]
 # Get the mediablogger from path Yaml  IMAGES MUST HAVE SAME NAME AND BE IN MEDIABLOGGER
 image_urls = [
-    config["blogger"]["blog"]["media_blogger_endpoint"].format(file) for file in images
+    "https://firebasestorage.googleapis.com/v0/b/opencreator-1699308232742.appspot.com/o/Blog%2Faesthetic_destinations%2Faesthetic_destinations_logo_light.png?alt=media&token=4c52d11a-e9ab-4391-b158-7270cc22d8e3"
 ]
 # Insert Images
 for section, image_url in zip_longest(
