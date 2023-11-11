@@ -1,3 +1,4 @@
+import json
 import os
 import random
 from typing import Any, Dict, List, Tuple, Union
@@ -24,9 +25,6 @@ class Blogger:
     def __init__(
         self,
         api_key: str,
-        system: str = """
-        You are an AI experienced in generating creative content for blogs.
-        Do not say welcome to or introduce yourself, and get to the point.""",
         tone: str = "",
         template_file_path: str = "./blog_template.html",
     ) -> None:
@@ -34,15 +32,15 @@ class Blogger:
         Initializes the Blogger with an API key and an optional system prompt.
 
         :param api_key: The API key for OpenAI's API.
-        :param system: A predefined system prompt for the AI model.
+        :param tone: writing style for the blog
+        :param template_file_path : the main template file html to render
         """
         self.api_key: str = api_key
-        self.system: str = system
         self.tone: str = tone
         self.keywords: List[str] = []
         self.main_content_sections: List[str] = []
         self.template_file_path = template_file_path
-        self.context = []
+        self.history = []
 
     def make_template(self, template_file_path: str):
         """
@@ -77,46 +75,59 @@ class Blogger:
             file.write(html_content)
 
     def chat_completion(
-        self, prompt: str, max_words: int = 100, temperature: float = 0.2
+        self, prompt: str, system: str, temperature: float = 0.2
     ) -> str:
         """
-        Sends a prompt to the OpenAI API and returns the completion,
-        summarizing the content if it exceeds a certain word limit.
+        Sends a prompt to the OpenAI API and returns the completion, taking into account the conversation history
+        to provide context-aware responses and avoid repetition.
 
         :param prompt: The prompt to send to the AI.
-        :param max_words: The maximum number of words allowed in the response.
+        :param system: System-level instructions or context for the AI.
+        :param max_words: The maximum number of words allowed in the response. (Currently not used in this function, but can be implemented for additional control)
+        :param temperature: Controls the randomness of the response. Lower values make the model more deterministic.
         :return: The AI-generated content.
         """
-        openai_client = OpenAI(api_key=self.api_key)
 
-        # Construct the prompt to communicate the desired tone as a style instruction
-        prompt_with_tone = f"{self.tone} tone: {prompt}" if self.tone else prompt
+        # Construct the prompt with the desired tone
+        prompt_with_tone = (
+            f"Consider the previous messages if they exists and write {self.tone}: {prompt}"
+            if self.tone
+            else prompt
+        )
 
-        # Prepare the payload for the API request
+        # Update the history with the user's current prompt
+        self.history.append({"role": "user", "content": prompt_with_tone})
+
+        # Prepare the payload for the API request, including the conversation history
         payload = {
             "model": "gpt-3.5-turbo",
             "temperature": temperature,
-            "messages": [
-                {"role": "system", "content": self.system},
-                {"role": "user", "content": prompt_with_tone},
-            ],
+            "messages": self.history + [{"role": "system", "content": system}],
         }
 
         # Send the request and get the response from OpenAI
         response = openai_client.chat.completions.create(**payload)
         content = response.choices[0].message.content.strip()
 
-        # Update the context to include the new content
-        self.context.append(content)
+        # Update the history with the AI's response
+        self.history.append({"role": "assistant", "content": content})
 
-        # If the content is within the word limit, return the original content
+        # Trim the history if it gets too long to manage context size
+        # This number (e.g., 10) can be adjusted based on your needs
+        if len(self.history) > 50:
+            self.history = self.history[-50:]
+
+        # Return the AI-generated content, with quotes removed for formatting
         return content.replace('"', "")
 
     def generate_keywords(self, topic: str) -> List[str]:
         # Generate SEO-friendly keywords for a given topic
-        prompt_template = config["blogger"]["blog"]["prompts"]["generate_keywords"]
+        prompt_template = config["blogger"]["blog"]["prompts"]["generate_keywords"][
+            "prompt"
+        ]
         prompt = prompt_template.format(topic)
-        keywords_str: str = self.chat_completion(prompt)
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
+        keywords_str: str = self.chat_completion(prompt, system=system)
         self.keywords = keywords_str.split(", ")
         return self.keywords
 
@@ -127,11 +138,14 @@ class Blogger:
         )
 
         # Fetch the prompt template from the YAML configuration and format it with the topic and used keywords
-        prompt_template = config["blogger"]["blog"]["prompts"]["incorporate_keywords"]
+        prompt_template = config["blogger"]["blog"]["prompts"]["incorporate_keywords"][
+            "prompt"
+        ]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
         rewrite_prompt = prompt_template.format(topic, ", ".join(used_keywords))
 
         # Call the chat_completion method with the formatted prompt
-        rewritten_text: str = self.chat_completion(rewrite_prompt)
+        rewritten_text: str = self.chat_completion(rewrite_prompt, system=system)
 
         # Return the rewritten text
         return rewritten_text
@@ -142,11 +156,15 @@ class Blogger:
             self.generate_keywords(topic)
 
         # Fetch the prompt template from the YAML configuration and format it with the topic
-        prompt_template = config["blogger"]["blog"]["prompts"]["generate_title"]
+        prompt_template = config["blogger"]["blog"]["prompts"]["generate_title"][
+            "prompt"
+        ]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
+
         generate_title_prompt = prompt_template.format(topic)
 
         # Call the chat_completion method with the formatted prompt
-        title: str = self.chat_completion(generate_title_prompt)
+        title: str = self.chat_completion(prompt=generate_title_prompt, system=system)
 
         # Return the title with quotes removed
         return title.replace('"', "")
@@ -159,7 +177,8 @@ class Blogger:
         # Fetch the prompt template from the YAML configuration
         subtitle_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_subtitle"
-        ]
+        ]["prompt"]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
 
         # Check if an aspect is provided and format the prompt accordingly
         if aspect:
@@ -170,7 +189,9 @@ class Blogger:
             generate_subtitle_prompt = subtitle_prompt_template.format(topic, "")
 
         # Call the chat_completion method with the formatted prompt
-        subtitle: str = self.chat_completion(generate_subtitle_prompt)
+        subtitle: str = self.chat_completion(
+            prompt=generate_subtitle_prompt, system=system
+        )
 
         # Return the subtitle with quotes removed
         return subtitle.replace('"', "")
@@ -183,13 +204,15 @@ class Blogger:
         # Fetch the prompt template from the YAML configuration
         introduction_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_introduction"
-        ]
-
+        ]["prompt"]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
         # Format the prompt with the provided topic
         generate_introduction_prompt = introduction_prompt_template.format(topic)
 
         # Call the chat_completion method with the formatted prompt
-        introduction: str = self.chat_completion(generate_introduction_prompt)
+        introduction: str = self.chat_completion(
+            prompt=generate_introduction_prompt, system=system
+        )
 
         # Incorporate keywords into the introduction for SEO optimization
         seo_optimized_introduction = self.incorporate_keywords(
@@ -208,13 +231,16 @@ class Blogger:
         # Fetch the prompt template from the YAML configuration
         generate_link_text_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_link_text"
-        ]
+        ]["prompt"]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
 
         # Format the prompt with the provided aspect
         generate_link_text_prompt = generate_link_text_prompt_template.format(aspect)
 
         # Call the chat_completion method with the formatted prompt
-        link_text = self.chat_completion(generate_link_text_prompt)
+        link_text = self.chat_completion(
+            prompt=generate_link_text_prompt, system=system
+        )
 
         # Return the link text with any leading/trailing whitespace removed
         return link_text.strip()
@@ -222,12 +248,18 @@ class Blogger:
     def generate_promo_context(self, aspect: str, promo_link: str) -> Dict[str, str]:
         context_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_promo_context"
-        ]
+        ]["prompt"]
+        system = config["blogger"]["blog"]["prompts"]["generate_keywords"]["system"]
         context_prompt = context_prompt_template.format(aspect, promo_link)
-        promo_context = self.chat_completion(context_prompt)
+        promo_context = self.chat_completion(context_prompt, system=system)
 
-        link_text_template = config["blogger"]["blog"]["prompts"]["generate_link_text"]
-        link_text = self.chat_completion(link_text_template.format(aspect))
+        link_text_template = config["blogger"]["blog"]["prompts"]["generate_link_text"][
+            "prompt"
+        ]
+        system = config["blogger"]["blog"]["prompts"]["generate_link_text"]["system"]
+        link_text = self.chat_completion(
+            link_text_template.format(aspect), system=system
+        )
 
         promo_dict = {
             "content": promo_context,
@@ -247,9 +279,11 @@ class Blogger:
 
         generate_section_prompt_template = config["blogger"]["blog"]["prompts"][
             "generate_section"
-        ]
+        ]["prompt"]
+        system = config["blogger"]["blog"]["prompts"]["generate_section"]["system"]
+
         generate_section_prompt = generate_section_prompt_template.format(topic, aspect)
-        content = self.chat_completion(generate_section_prompt)
+        content = self.chat_completion(generate_section_prompt, system=system)
         paragraphs = content.split("\n\n")
 
         structured_section = {
@@ -341,12 +375,13 @@ class Blogger:
         )
 
         # Fetch the ending prompt format from the config and fill it with the aspect
-        ending_prompt = config["blogger"]["blog"]["prompts"]["generate_ending"].format(
-            aspect
-        )
+        ending_prompt = config["blogger"]["blog"]["prompts"]["generate_ending"][
+            "prompt"
+        ].format(aspect)
+        system = config["blogger"]["blog"]["prompts"]["generate_ending"]["system"]
 
         # Obtain the AI-generated ending content
-        ending_content = self.chat_completion(ending_prompt)
+        ending_content = self.chat_completion(ending_prompt, system=system)
 
         # Compile the ending structure for template rendering
         ending_structure = {"content": ending_content, "promo_links": promo_links_list}
@@ -364,3 +399,45 @@ def get_title_from_html(html_content):
         return title_tag.get_text()
     else:
         raise ValueError("No title tag found in HTML content.")
+
+
+def save_blog_content(content, file_path):
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(content, f, ensure_ascii=False, indent=4)
+
+
+def load_blog_content(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"No saved content found at {file_path}")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from {file_path}")
+        return None
+    except Exception as e:
+        print(f"An error occurred while loading the blog content: {e}")
+        return None
+
+
+def render_blog_post(blog_content, template_file_path, output_file_path):
+    env = Environment(loader=FileSystemLoader("."))
+    template = env.get_template(template_file_path)
+
+    # Render the template with the provided blog content
+    html_content = template.render(
+        title=blog_content["title"],
+        introduction=blog_content["introduction"],
+        cover=blog_content["cover"],
+        sections=blog_content["sections"],
+        ending=blog_content["ending"],
+    )
+
+    # # Use BeautifulSoup to pretty-print the HTML
+    # soup = BeautifulSoup(html_content, "html.parser")
+    # formatted_html = soup.prettify()
+
+    # Write the formatted HTML content to the output file with UTF-8 encoding
+    with open(output_file_path, "w", encoding="utf-8") as file:
+        file.write(html_content)

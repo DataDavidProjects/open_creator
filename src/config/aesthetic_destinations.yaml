@@ -8,7 +8,7 @@ image_processing:
 blogger:
   blog:
     topic: "Dubai"
-    tone: "professional and concise"
+    tone: "using a professional and concise tone"
     aspects:
       - - Suites in Dubai
         - https://www.anantara.com/en/downtown-dubai/rooms/anantara-burj-khalifa-view-suite
@@ -26,38 +26,64 @@ blogger:
         text: "Discover more here!"
 
     prompts:
-      generate_keywords: |
-        Write 5 SEO keywords for a blog post about {}.
+      system: |
+        You are an AI expert in blog content creation. Provide concise, informative, and unique responses in paragraph format. Avoid repetition, off-topic content, overly complex language, and bullet point lists.
 
-      incorporate_keywords: |
-        Rewrite the following text to naturally include these keywords about {}: {}.
+      generate_keywords:
+        system: |
+          Focus on SEO optimization with highly relevant and specific keywords. Avoid generic or irrelevant keywords and listing in bullet points.
+        prompt: |
+          Generate 5 targeted SEO keywords for a blog post about "{}".
 
-      generate_title: |
-        Create a one line very short and engaging blog post title about {}.
+      incorporate_keywords:
+        system: |
+          Seamlessly integrate keywords into the text in a narrative style. Ensure natural flow and readability. Avoid forced insertions and bullet points.
+        prompt: |
+          Rewrite this text to include these keywords about "{}": {}.
 
-      generate_subtitle: |
-        Create a one line very short and interesting subtitle for a section of a blog post about {}, specifically focusing on {}.
+      generate_title:
+        system: |
+          Create a captivating, concise title that reflects the blog's theme. Avoid vague, misleading, or list-style titles.
+        prompt: |
+          Generate an engaging blog post title about "{}".
 
-      generate_introduction: |
-        Write a one line short introduction for a blog post about {}. Write at most 4 lines.
+      generate_subtitle:
+        system: |
+          Subtitles should add depth, focusing on a specific aspect in a narrative form. Avoid general, broad, or bullet point subtitles.
+        prompt: |
+          Blog topic: "{}"
+          Subtopic: "{}"
+          Subtitle:
 
-      generate_link_text: |
-        Create a short, engaging call-to-action link text related to '{}'.
-        Example of output
-        Deluxe Burji Khalifa Room
+      generate_introduction:
+        system: |
+          Write an engaging introduction in paragraph format that sets the tone and provides an overview. Avoid long-winded, off-topic introductions, and bullet points.
+        prompt: |
+          Write a concise introduction for a blog post about "{}". Limit to 4 lines.
 
-      generate_promo_context: |
-        Write a 10 max word friendly and informative paragraph that provides value to the reader and naturally introduces a promotional link related to '{}'.
+      generate_link_text:
+        system: |
+          Create engaging, click-enticing link text relevant to the content in a complete sentence. Avoid generic, irrelevant, or list-style link text.
+        prompt: |
+          Generate a call-to-action link text related to "{}".
 
-      generate_section: |
-        Write a short detailed section for a blog post about {} focusing on '{}'. 
-        You have a mandatory limit of 100 words of output text, it must be very short.
-        If there are links you should not remove them.
-        Do not say welcome and do not introduce yourself.
-        Do not make introduction and get to the point.
+      generate_promo_context:
+        system: |
+          Write a brief, friendly paragraph that leads into a promotional link. Avoid overly salesy content, irrelevance, and bullet point formats.
+        prompt: |
+          Create a promotional context paragraph related to "{}". Limit to 10 words.
 
-      generate_ending: |
-        Write a compelling ending statement for a blog post about {} that includes a call to action for readers.
+      generate_section:
+        system: |
+          Develop a detailed, concise section on a specific aspect in paragraph form. Keep under 100 words. Avoid vagueness, straying from the topic, or bullet points, starting the answer with Welcome to or by introducing yourself to the reader.
+        prompt: |
+          Without Welcoming the reader: Write a detailed section for a blog post about "{}", focusing on "{}".
+
+      generate_ending:
+        system: |
+          Conclude with a summary and a call to action in a narrative style. Avoid abrupt endings, unrelated content, or bullet point summaries.
+        prompt: |
+          Write a compelling ending for a blog post about "{}" that encourages reader engagement.
 
   hmtl_template: |
 
