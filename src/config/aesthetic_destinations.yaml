@@ -17,7 +17,7 @@ blogger:
 
     images_path: "{}/images/"
     template_file_path: "{}/templates/blog_template.html"
-    output_file_path: "{}/tables/blog.html"
+    output_file_path: "{}/tables/blog_{}.html"
 
     extra_promo_links:
       - href: "https://example-link3.com"

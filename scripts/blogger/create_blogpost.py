@@ -23,11 +23,11 @@ def read_html_file(file_path):
 
 
 # Use the function to read the HTML content
-html_file_path = config["blogger"]["blog"]["output_file_path"].format(project_path)
+html_file_path = ""
 content = read_html_file(html_file_path)
 
-
-title = get_title_from_html(content)
+get_title_from_html(content)
+title = ""
 response = create_blog_post(
     GOOGLE_BLOGSPOT_ID, title, content, token_json_file=TOKEN_JSON_FILE
 )

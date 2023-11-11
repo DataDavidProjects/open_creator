@@ -435,8 +435,9 @@ def render_blog_post(blog_content, template_file_path, output_file_path):
     )
 
     # # Use BeautifulSoup to pretty-print the HTML
-    # soup = BeautifulSoup(html_content, "html.parser")
-    # formatted_html = soup.prettify()
+    soup = BeautifulSoup(html_content, "html.parser")
+    formatted_html = soup.prettify()
+    html_content = formatted_html
 
     # Write the formatted HTML content to the output file with UTF-8 encoding
     with open(output_file_path, "w", encoding="utf-8") as file:
