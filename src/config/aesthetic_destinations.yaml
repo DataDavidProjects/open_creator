@@ -6,184 +6,173 @@ image_processing:
   color_portrait: "#0000"
 
 blogger:
+  GOOGLE_BLOGSPOT_ID: 2959229722363721301
   blog:
-    topic: "Dubai"
     tone: "using a professional and concise tone"
-    aspects:
-      - - Suites in Dubai
-        - https://www.anantara.com/en/downtown-dubai/rooms/anantara-burj-khalifa-view-suite
-      - - Burj Khalifa
-        - https://www.anantara.com/en/downtown-dubai/rooms/deluxe-burj-khalifa-view-room
-
     images_path: "{}/images/"
     template_file_path: "{}/templates/blog_template.html"
     output_file_path: "{}/tables/blog_{}.html"
 
+    topic: "Travelling to Dubai"
+    aspects:
+      - topic: Burj Khalifa
+        promo_link: https://www.anantara.com/en/downtown-dubai/rooms/deluxe-burj-khalifa-view-room
+
+      - topic: Dubai Pools
+        promo_link: https://www.anantara.com/en/downtown-dubai/rooms/premier-pool-view-room
+
     extra_promo_links:
-      - href: "https://example-link3.com"
-        text: "Check out our special offer!"
-      - href: "https://example-link4.com"
-        text: "Discover more here!"
+      - topic: Dubai Hotel
+        promo_link: https://www.anantara.com/en/downtown-dubai/rooms/presidential-suite-with-pool
+      - topic: Dubai Hotel
+        promo_link: https://www.anantara.com/en/downtown-dubai/rooms/two-bedroom-burj-khalifa-view-suite
 
     prompts:
-      system: |
-        You are an AI expert in blog content creation. Provide concise, informative, and unique responses in paragraph format. Avoid repetition, off-topic content, overly complex language, and bullet point lists.
-
-      generate_keywords:
-        system: |
-          Focus on SEO optimization with highly relevant and specific keywords. Avoid generic or irrelevant keywords and listing in bullet points.
-        prompt: |
-          Generate 5 targeted SEO keywords for a blog post about "{}".
-
-      incorporate_keywords:
-        system: |
-          Seamlessly integrate keywords into the text in a narrative style. Ensure natural flow and readability. Avoid forced insertions and bullet points.
-        prompt: |
-          Rewrite this text to include these keywords about "{}": {}.
-
       generate_title:
-        system: |
-          Create a captivating, concise title that reflects the blog's theme. Avoid vague, misleading, or list-style titles.
         prompt: |
-          Generate an engaging blog post title about "{}".
+          You will generate a blog post title related to the topic.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          The topic of the blog post is: \n 
+          {topic} \n.
+
+        instructions: |
+          Purpose: Create a very short compelling and engaging title for the blog post.
+          Length: Keep the title concise and attention-grabbing, capturing the essence of the content in a few words.
+          Engagement: Use a hook or captivating element to intrigue and engage the reader, encouraging them to explore the blog post.
+          Format: Avoid using colons (":") in the title. Max 6 words and be creative.
+          Tone: Craft a title that reflects the tone and style of the blog post, setting the reader's expectations accurately.
+          Clarity: Ensure the title provides a clear idea of the content without giving away all the details.
+          Avoidance: Do not announce or explicitly label the content as a "Guide" or similar terms that might limit the title's appeal.
 
       generate_subtitle:
-        system: |
-          Subtitles should add depth, focusing on a specific aspect in a narrative form. Avoid general, broad, or bullet point subtitles.
         prompt: |
-          Blog topic: "{}"
-          Subtopic: "{}"
-          Subtitle:
+          You will generate a blog post subtitle related to the topic.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          The topic of the blog post is: \n 
+          {topic} \n.
+
+        instructions: |
+          Purpose: Compose an engaging and informative subtitle that complements the blog post title.
+          Length: Keep the subtitle concise while providing additional context or intrigue.
+          Engagement: Use a hook or captivating element to further engage the reader's curiosity.
+          Format: Avoid using colons (":") in the subtitle.
+          Clarity: Ensure the subtitle offers clarity and relevance without overwhelming the reader with details.
+          Tone: Align the subtitle with the overall tone and style of the blog post, maintaining a consistent reader experience.
+          Avoidance: Do not include any direct links or URL-like text in the subtitle.
 
       generate_introduction:
-        system: |
-          Write an engaging introduction in paragraph format that sets the tone and provides an overview. Avoid long-winded, off-topic introductions, and bullet points.
         prompt: |
-          Write a concise introduction for a blog post about "{}". Limit to 4 lines.
+          You will generate a blog post introduction related to the topic.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          The topic of the blog post is: \n 
+          {topic} \n.
 
-      generate_link_text:
-        system: |
-          Create engaging, click-enticing link text relevant to the content in a complete sentence. Avoid generic, irrelevant, or list-style link text.
+        instructions: |
+          Purpose: Craft a concise and engaging introduction for the blog post.
+          Length: Keep the introduction brief, providing a teaser of what's to come without delving into extensive details.
+          Engagement: Use an engaging hook or intriguing element to captivate the reader's interest from the start.
+          Clarity: Ensure the introduction offers clarity and relevance to the topic, setting the reader's expectations appropriately.
+          Tone: Align the introduction with the overall tone and style of the blog post, maintaining a consistent reader experience.
+          Avoidance: Do not use specific terms like "opulent," "dazzling," "unveiling," "indulge," or "embark."
+
+      generate_promo:
         prompt: |
-          Generate a call-to-action link text related to "{}".
+          You will enhance a blog post paragraph with subtle promotional elements.
+          The promotional link is {promo_link}.
+          You will not write any link.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          The method is {method} and the existing content is: \n 
+          {content} \n.
 
-      generate_promo_context:
-        system: |
-          Write a brief, friendly paragraph that leads into a promotional link. Avoid overly salesy content, irrelevance, and bullet point formats.
+        instructions: |
+          You will keep the response succinct, complementing the blog's existing narrative.
+          You will not directly include or reference the promotional link or use explicit promotional language.
+          If the method is 'append', conclude the paragraph with an engaging, related offer that piques interest without an overt CTA.
+          If the method is 'blend', distribute subtle nods to the promotion within the paragraph, enhancing the content without disrupting its informative nature.
+          The promotional content should be presented as an additional resource or a natural part of the conversation that the reader may choose to explore, positioned as a benefit or an extension of the information provided.
+          Preserve the paragraph’s existing tone and style, ensuring the added promotional elements feel cohesive and are contextually relevant to the content.
+
+      generate_button_link:
         prompt: |
-          Create a promotional context paragraph related to "{}". Limit to 10 words.
+          You will generate a CTA button for a promotional link about {topic}.
+          The promotional link is {promo_link}.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+        instructions: |
+          Purpose: Create a compelling and succinct Call to Action (CTA) button text for the promotional link.
+          Length: Keep the CTA short, concise, and to the point.
+          Engagement: Craft a CTA that encourages immediate action or exploration without the need for excessive detail.
+          Clarity: Ensure the CTA text clearly conveys its purpose and the benefit of clicking without providing the actual link.
+          Creativity: Formulate an original and creative CTA that resonates with the blog's topic and the promotion's context.
+          Avoidance: Do not include the actual link in the CTA text.
+          Variation: Avoid using generic or overused CTA phrases like "Click Here." Instead, aim for a unique and memorable CTA.
 
-      generate_section:
-        system: |
-          Develop a detailed, concise section on a specific aspect in paragraph form. Keep under 100 words. Avoid vagueness, straying from the topic, or bullet points, starting the answer with Welcome to or by introducing yourself to the reader.
+      generate_paragraph:
         prompt: |
-          Without Welcoming the reader: Write a detailed section for a blog post about "{}", focusing on "{}".
+          You will generate a paragraph for a blog post about:
+          {topic}.
+          Ensure this paragraph fits seamlessly within the context of the post and can be placed at any point, neither as the first nor the last section.
+          The blog has the following subtitle:
+          {subtitle}.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
 
-      generate_ending:
-        system: |
-          Conclude with a summary and a call to action in a narrative style. Avoid abrupt endings, unrelated content, or bullet point summaries.
+        instructions: |
+          Purpose: Enhance the blog post by adding a paragraph that provides new insights or details on {topic}, contributing to the overarching narrative.
+          Tone and Style: Keep the tone aligned with the post, informative yet engaging, and ensure the paragraph contributes a fresh viewpoint or piece of information.
+          Structure: Write the paragraph as a connective piece, using transitional elements to link it to the preceding and following sections. Avoid standalone introductory or concluding phrases.
+          Engagement: Introduce unique content, whether a fact, an anecdote, or an idea, that hasn't been covered in other parts of the post. Start with a creative opening different from any other paragraph.
+          SEO Considerations: Utilize a variety of related keywords, especially those that haven't been heavily featured, to enrich the paragraph and support the post's overall SEO.
+          Call to Action: Embed indirect CTAs, like suggestive prompts or questions, to maintain reader interest and engagement without concluding the narrative.
+          Language Use: Apply diverse sentence structures and vocabulary. Begin with an original concept or statement that differs from other sections covering {topic}.
+          Content Restrictions: Steer clear of repeated openings such as 'Did you know,' or 'deep-dive' and avoid any language that could close the discussion. Each paragraph should maintain the flow of the article and avoid redundancy.
+
+      generate_recap:
         prompt: |
-          Write a compelling ending for a blog post about "{}" that encourages reader engagement.
+          You will summarize the following content in a few lines to conclude a blog post.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          Content to summarize:\n
+          {content_to_summarize}\n.
 
-  hmtl_template: |
+        instructions: |
+          Purpose: Craft a concise summary of the content to conclude the blog post.
+          Length: Keep the summary short and to the point, providing key takeaways from the content.
+          Clarity: Ensure the summary offers clarity and accurately reflects the main points discussed.
+          Conclusion: At the end of the summary, include a concluding Call to Action (CTA) sentence related to the importance of travel.
+          CTA Sentence: Create a persuasive and engaging CTA that encourages readers to consider the significance of travel without directly linking or mentioning URLs.
+          Avoidance: Do not display or write any actual links in the summary.
 
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{ title }}</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap"
-          rel="stylesheet"
-        />
-        <style>
-          #blog {
-            background: snow;
-            font-family: "Montserrat", sans-serif;
-            text-align: justify;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 5%;
-          }
+      generate_keywords:
+        prompt: |
+          You will generate {n} SEO keywords for the following topic:\n
+          {topic}\n.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+        instructions: |
+          You will generate the keywords and use  a  ',' to separate them.
+          Keywords must be related to the topic.
+          Do not use numbers.
 
-          h2 {
-            text-align: center;
-            font-size: 1.5em;
-          }
+      incorporate_keywords:
+        prompt: |
+          You will incorporate a sequence of keywords into the content to increase the SEO.
+          You will complete the task following these instructions: \n
+          {instructions} \n.
+          Keywords:\n
+          {keywords}.
+          Content:\n
+          {content}.\n
 
-          h4 {
-            text-align: center;
-            font-size: 1.2em;
-          }
-
-          p {
-            font-size: 0.9em;
-          }
-
-          .promolink {
-            background-color: #e0e0e0;
-            color: #333333;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 2%;
-            font-weight: bold;
-            margin: 10px 0;
-            display: inline-block;
-            transition: transform 0.3s, background-color 0.3s, color 0.3s;
-          }
-
-          .promolink:hover {
-            transform: scale(1.1);
-            background-color: #cfb53b;
-            color: #ffffff;
-          }
-        </style>
-      </head>
-      <body>
-        <div id="blog">
-          <section>
-            <h2>{{ title }}</h2>
-            <p>{{ introduction }}</p>
-            {% if cover.image_url %}
-            <img src="{{ cover.image_url }}" alt="cover" />
-            {% endif %}
-          </section>
-          {% for section in sections %}
-          <section>
-            <h4>{{ section.header }}</h4>
-            {% if section.image_url %}
-            <img src="{{ section.image_url }}" alt="{{ section.header }}" />
-            {% endif %} {% for paragraph in section.paragraphs %}
-            <p>{{ paragraph }}</p>
-            {% endfor %} {% if section.promo %}
-            <div>
-              <a href="{{ section.promo.link }}" class="promolink">
-                {{ section.promo.link_text }}
-              </a>
-            </div>
-            {% endif %}
-          </section>
-          {% endfor %}
-          <div>
-            <h2>Conclusion</h2>
-            <p>{{ ending.content }}</p>
-            {% if ending.promo_links %}
-            <div>
-              <h4>Promotions and Rooms</h4>
-              <ul>
-                {% for promo_link in ending.promo_links %}
-                <li>
-                  <a href="{{ promo_link.href }}" class="promolink">
-                    {{ promo_link.text }}
-                  </a>
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </body>
-    </html>
+        instructions: |
+          You will not change the main content but simply blend into the original content.
+          You will keep a similar text lenght to the original content.
+          If the content is very short is probably a title. 
+          Do not change it.
 
 anantara:
   destinations:

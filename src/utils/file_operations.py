@@ -1,10 +1,8 @@
 import logging
 import os
 import random
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-import yaml
-from dotenv import load_dotenv
 from PIL import Image
 
 
@@ -18,40 +16,6 @@ def setup_logger() -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-
-
-def load_config(project_name: str) -> Dict[str, Any]:
-    """
-    Loads the configuration from a YAML file and environment variables.
-
-    Parameters:
-    - project_name (str): The name of the project.
-
-    Returns:
-    - dict: A dictionary containing the loaded configuration.
-    """
-
-    # Load environment variables from the .env file
-    load_dotenv()
-
-    # Construct the path to the YAML configuration file
-    config_file_path = os.path.join("src", "config", f"{project_name}.yaml")
-
-    # Ensure the YAML configuration file exists
-    if not os.path.exists(config_file_path):
-        raise FileNotFoundError(
-            f"Configuration file {config_file_path} does not exist."
-        )
-
-    # Load the YAML configuration file
-    with open(config_file_path, "r") as file:
-        config = yaml.safe_load(file)
-
-    # Merge the loaded environment variables into the configuration dictionary
-    # This allows environment variables to override values specified in the YAML file
-    config.update(os.environ)
-
-    return config
 
 
 # Example Usage:
@@ -82,16 +46,16 @@ def read_images(path: str) -> List[Image.Image]:
                     img = Image.open(file_path)
                     images.append(img)
                 except Exception as e:
-                    logger.error(f"Failed to read {file_path}: {e}")
+                    pass
     elif os.path.isfile(path):
         # If the path is a file, load the image file
         try:
             img = Image.open(path)
             images.append(img)
         except Exception as e:
-            logger.error(f"Failed to read {path}: {e}")
+            pass
     else:
-        logger.error(f"Invalid path: {path}")
+        pass
 
     return images
 

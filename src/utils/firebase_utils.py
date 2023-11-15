@@ -1,13 +1,16 @@
+import sys
+
+sys.path.append(".")
 import dotenv
 import firebase_admin
 from firebase_admin import credentials, storage
 
-from src.utils.file_operations import load_config
+from src.utils.authentication import PROJECT_NAME, load_config
 
 # Load environment variables
 dotenv.load_dotenv()
 # Config Project files
-project_name = "aesthetic_destinations"
+project_name = PROJECT_NAME
 config = load_config(project_name)
 project_path = f"src/assets/data/{project_name}/blog"
 
@@ -57,7 +60,7 @@ def list_files_in_folder(folder_path=None):
 # --------------------------------------------------------------------------#
 # # Upload Example
 # root_images_path = f"src/assets/data/{project_name}/blog/images/"
-# project_name = "aesthetic_destinations"
+# project_name =  PROJECT_NAME
 
 
 # file_image = "aesthetic_destinations_light.png"

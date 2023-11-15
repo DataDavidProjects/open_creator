@@ -1,14 +1,8 @@
-import os
-from pathlib import Path
-
-from dotenv import load_dotenv
+from authentication import *
 from openai import OpenAI
-from PIL import Image
 
 # Load environment variables
-load_dotenv()
-api_key = os.environ.get("OPENAI_API_KEY")
-openai_client = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 # openai_client = OpenAI(api_key=api_key)
@@ -36,4 +30,4 @@ openai_client = OpenAI(api_key=api_key)
 # print(image_url)
 
 
-image = Image.open(Path(__file__).parent / "aesthetic_destinations_template_12.png")
+# image = Image.open(Path(__file__).parent / "aesthetic_destinations_template_12.png")

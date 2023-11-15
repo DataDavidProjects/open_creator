@@ -1,1 +1,187 @@
 project: theallurecode
+
+image_processing:
+  alpha_overlay: 0.01
+  color_overlay: "#0000"
+  color_portrait: "#0000"
+
+blogger:
+  GOOGLE_BLOGSPOT_ID: 4309253655499790374
+  blog:
+    topic: "Dubai"
+    tone: "using a professional and concise tone"
+    aspects:
+      - - Why Dubai has the best view suite.
+        - https://www.anantara.com/en/downtown-dubai/rooms/anantara-burj-khalifa-view-suite
+      - - Burj Khalifa is the best view in town.
+        - https://www.anantara.com/en/downtown-dubai/rooms/deluxe-burj-khalifa-view-room
+
+    images_path: "{}/images/"
+    template_file_path: "{}/templates/blog_template.html"
+    output_file_path: "{}/tables/blog_{}.html"
+
+    extra_promo_links:
+      - href: "https://example-link3.com"
+        text: "Check out our special offer!"
+      - href: "https://example-link4.com"
+        text: "Discover more here!"
+
+    prompts:
+      system: |
+        You are an AI expert in blog content creation. Provide concise, informative, and unique responses in paragraph format. Avoid repetition, off-topic content, overly complex language, and bullet point lists.
+
+      generate_keywords:
+        system: |
+          Focus on SEO optimization with highly relevant and specific keywords. Avoid generic or irrelevant keywords and listing in bullet points.
+        prompt: |
+          Generate 5 targeted SEO keywords for a blog post about "{}".
+
+      incorporate_keywords:
+        system: |
+          Seamlessly integrate keywords into the text in a narrative style. Ensure natural flow and readability. Avoid forced insertions and bullet points.
+        prompt: |
+          Rewrite this text to include these keywords about "{}": {}.
+
+      generate_title:
+        system: |
+          Create a captivating, concise title that reflects the blog's theme. Avoid vague, misleading, or list-style titles.
+        prompt: |
+          Generate an engaging blog post title about "{}".
+
+      generate_subtitle:
+        system: |
+          Subtitles should add depth, focusing on a specific aspect in a narrative form. Avoid general, broad, or bullet point subtitles.
+        prompt: |
+          Blog topic: "{}"
+          Subtopic: "{}"
+          Subtitle:
+
+      generate_introduction:
+        system: |
+          Write an engaging introduction in paragraph format that sets the tone and provides an overview. Avoid long-winded, off-topic introductions, and bullet points.
+        prompt: |
+          Write a concise introduction for a blog post about "{}". Limit to 4 lines.
+
+      generate_link_text:
+        system: |
+          Create engaging, click-enticing link text relevant to the content in a complete sentence. Avoid generic, irrelevant, or list-style link text.
+        prompt: |
+          Generate a call-to-action link text related to "{}".
+
+      generate_promo_context:
+        system: |
+          Write a brief, friendly paragraph that leads into a promotional link. Avoid overly salesy content, irrelevance, and bullet point formats.
+        prompt: |
+          Create a promotional context paragraph related to "{}". Limit to 10 words.
+
+      generate_section:
+        system: |
+          Develop a detailed, concise section on a specific aspect in paragraph form. Keep under 100 words. Avoid vagueness, straying from the topic, or bullet points, starting the answer with Welcome to or by introducing yourself to the reader.
+        prompt: |
+          Without Welcoming the reader: Write a detailed section for a blog post about "{}", focusing on "{}".
+
+      generate_ending:
+        system: |
+          Conclude with a summary and a call to action in a narrative style. Avoid abrupt endings, unrelated content, or bullet point summaries.
+        prompt: |
+          Write a compelling ending for a blog post about "{}" that encourages reader engagement.
+
+  hmtl_template: |
+
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ title }}</title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          #blog {
+            background: snow;
+            font-family: "Montserrat", sans-serif;
+            text-align: justify;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 5%;
+          }
+
+          h2 {
+            text-align: center;
+            font-size: 1.5em;
+          }
+
+          h4 {
+            text-align: center;
+            font-size: 1.2em;
+          }
+
+          p {
+            font-size: 0.9em;
+          }
+
+          .promolink {
+            background-color: #e0e0e0;
+            color: #333333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2%;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+            transition: transform 0.3s, background-color 0.3s, color 0.3s;
+          }
+
+          .promolink:hover {
+            transform: scale(1.1);
+            background-color: #cfb53b;
+            color: #ffffff;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="blog">
+          <section>
+            <h2>{{ title }}</h2>
+            <p>{{ introduction }}</p>
+            {% if cover.image_url %}
+            <img src="{{ cover.image_url }}" alt="cover" />
+            {% endif %}
+          </section>
+          {% for section in sections %}
+          <section>
+            <h4>{{ section.header }}</h4>
+            {% if section.image_url %}
+            <img src="{{ section.image_url }}" alt="{{ section.header }}" />
+            {% endif %} {% for paragraph in section.paragraphs %}
+            <p>{{ paragraph }}</p>
+            {% endfor %} {% if section.promo %}
+            <div>
+              <a href="{{ section.promo.link }}" class="promolink">
+                {{ section.promo.link_text }}
+              </a>
+            </div>
+            {% endif %}
+          </section>
+          {% endfor %}
+          <div>
+            <h2>Conclusion</h2>
+            <p>{{ ending.content }}</p>
+            {% if ending.promo_links %}
+            <div>
+              <h4>Promotions and Rooms</h4>
+              <ul>
+                {% for promo_link in ending.promo_links %}
+                <li>
+                  <a href="{{ promo_link.href }}" class="promolink">
+                    {{ promo_link.text }}
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </body>
+    </html>
