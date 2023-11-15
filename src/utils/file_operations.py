@@ -148,3 +148,22 @@ def rename_files_in_directory(
             )
 
     return all_renamed_successfully
+
+
+import os
+
+
+def rename_file_type(path: str, extension: str = "png"):
+    """
+    Rename all files in the given directory to have the specified extension.
+
+    Parameters:
+    - path (str): The path to the directory containing the files.
+    - extension (str): The new file extension type, default is 'png'.
+    """
+    for filename in os.listdir(path):
+        name, ext = os.path.splitext(filename)
+        if ext:  # if there is an extension
+            new_filename = f"{name}.{extension}"
+            os.rename(os.path.join(path, filename), os.path.join(path, new_filename))
+            print(f"Renamed {filename} to {new_filename}")

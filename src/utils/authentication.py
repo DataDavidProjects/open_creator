@@ -16,6 +16,7 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_BLOGSPOT_ID = os.environ.get("GOOGLE_BLOGSPOT_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GOOGLE_FONT_API_KEY = os.getenv("GOOGLE_FONT_API_KEY")
 # The file downloaded from the Google API Console
 CLIENT_SECRETS_FILE = "scripts/credentials.json"
 

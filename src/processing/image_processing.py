@@ -58,9 +58,6 @@ def pad_image_to_size(img: Image.Image, target_size: Tuple[int, int]) -> Image.I
     return padded_img
 
 
-from PIL import Image
-
-
 def fill_transparency(
     img: Image.Image, fill_color: Tuple[int, int, int] = (255, 255, 255)
 ) -> Image.Image:
@@ -76,14 +73,18 @@ def fill_transparency(
     """
     # Check if the image has an alpha channel
     if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
-        # Create a background image filled with the specified fill color
-        background = Image.new(img.mode[:-1], img.size, fill_color)
+        # Ensure the image is in RGBA mode for processing
+        if img.mode != "RGBA":
+            img = img.convert("RGBA")
+        # Create a new image with a white background and the same size
+        background = Image.new("RGB", img.size, fill_color)
+        # Paste the image onto the background, using the alpha channel as the mask
         background.paste(
-            img, img.split()[-1]
+            img, mask=img.split()[3]
         )  # Split off the alpha channel and use it as a mask
         return background
-
-    return img  # If no transparency, return the original image
+    else:
+        return img
 
 
 def apply_image(
