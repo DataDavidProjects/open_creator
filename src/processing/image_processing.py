@@ -28,6 +28,64 @@ def reduce_size(img: Image.Image, size: Tuple[int, int]) -> Image.Image:
     return resized_img
 
 
+from PIL import Image
+
+
+def pad_image_to_size(img: Image.Image, target_size: Tuple[int, int]) -> Image.Image:
+    """
+    Adds padding to an image to make it match a specified size with a white background.
+
+    Parameters:
+    - img (Image.Image): The original image to be padded.
+    - target_size (Tuple[int, int]): The target size (width, height) for the image after padding.
+
+    Returns:
+    - Image.Image: The padded image.
+    """
+    # Reduce the image size if it's larger than the target size, maintaining aspect ratio
+    img.thumbnail(target_size)
+
+    # Create a new image with a white background and the target size
+    padded_img = Image.new("RGB", target_size, "white")
+
+    # Calculate the position to paste the resized image onto the white background
+    paste_x = (target_size[0] - img.width) // 2
+    paste_y = (target_size[1] - img.height) // 2
+
+    # Paste the resized image onto the white background
+    padded_img.paste(img, (paste_x, paste_y))
+
+    return padded_img
+
+
+from PIL import Image
+
+
+def fill_transparency(
+    img: Image.Image, fill_color: Tuple[int, int, int] = (255, 255, 255)
+) -> Image.Image:
+    """
+    Fills the transparent areas of an image with the given fill_color.
+
+    Parameters:
+    - img (Image.Image): The original image that may have transparency.
+    - fill_color (Tuple[int, int, int]): The RGB color tuple to fill the background. Default is white.
+
+    Returns:
+    - Image.Image: The image with transparency filled.
+    """
+    # Check if the image has an alpha channel
+    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+        # Create a background image filled with the specified fill color
+        background = Image.new(img.mode[:-1], img.size, fill_color)
+        background.paste(
+            img, img.split()[-1]
+        )  # Split off the alpha channel and use it as a mask
+        return background
+
+    return img  # If no transparency, return the original image
+
+
 def apply_image(
     parent: Image.Image, child: Image.Image, paste_position: Union[Tuple[int, int], str]
 ) -> Image.Image:
@@ -188,3 +246,72 @@ def image_effects(
         image = effect_dict[effect](image)
 
     return image
+
+
+from typing import List
+
+from PIL import Image, ImageDraw, ImageFont
+
+
+def create_grid_infographic(
+    background_path: str,
+    images: List[Image.Image],
+    header_text: str,
+    footer_text: str = None,
+    font_path: str = "arial.ttf",
+    font_size: int = 50,
+    header_height: int = 150,
+    footer_height: int = 150,
+) -> Image.Image:
+    """
+    Creates an infographic with a header, a grid of images, and a footer.
+    :param background_path: Path to the background image.
+    :param images: List of PIL.Image objects to create the grid.
+    :param header_text: Text to be placed in the header.
+    :param footer_text: Optional text to be placed in the footer.
+    :param font_path: Path to the font file to be used.
+    :param font_size: Size of the font to be used for the header and footer text.
+    :param header_height: Height of the header area.
+    :param footer_height: Height of the footer area.
+    :return: A PIL.Image object representing the completed infographic.
+    """
+    # Load the background image
+    background_image = Image.open(background_path)
+
+    # Get dimensions for the grid images
+    grid_width = background_image.width // 3
+    grid_height = (background_image.height - header_height - footer_height) // 3
+
+    # Paste the grid images onto the background image
+    for i, img in enumerate(images):
+        x = (i % 3) * grid_width
+        y = (i // 3) * grid_height + header_height
+        background_image.paste(img.resize((grid_width, grid_height)), (x, y))
+
+    # Create draw object for the background image
+    draw = ImageDraw.Draw(background_image)
+
+    # Load font
+    try:
+        font = ImageFont.truetype(font_path, size=font_size)
+    except IOError:
+        font = ImageFont.load_default()
+
+    # Calculate the bounding box for the header text
+    bbox = font.getbbox(header_text)
+    title_x = (background_image.width - (bbox[2] - bbox[0])) // 2
+    title_y = (header_height - (bbox[3] - bbox[1])) // 2
+    draw.text((title_x, title_y), header_text, font=font, fill="white")
+
+    # Calculate the bounding box for the footer text, if provided
+    if footer_text:
+        bbox_footer = font.getbbox(footer_text)
+        footer_x = (background_image.width - (bbox_footer[2] - bbox_footer[0])) // 2
+        footer_y = (
+            background_image.height
+            - footer_height
+            + (footer_height - (bbox_footer[3] - bbox_footer[1])) // 2
+        )
+        draw.text((footer_x, footer_y), footer_text, font=font, fill="black")
+
+    return background_image
