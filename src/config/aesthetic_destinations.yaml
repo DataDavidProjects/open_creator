@@ -91,8 +91,9 @@ blogger:
         instructions: |
           You will keep the response succinct, complementing the blog's existing narrative.
           You will not directly include or reference the promotional link or use explicit promotional language.
-          If the method is 'append', conclude the paragraph with an engaging, related offer that piques interest without an overt CTA.
+          If the method is 'append', keep the content as it is and conclude the paragraph with an engaging, related offer that piques interest without an overt CTA.
           If the method is 'blend', distribute subtle nods to the promotion within the paragraph, enhancing the content without disrupting its informative nature.
+          if method is 'off' you will just return the original content.
           The promotional content should be presented as an additional resource or a natural part of the conversation that the reader may choose to explore, positioned as a benefit or an extension of the information provided.
           Preserve the paragraph’s existing tone and style, ensuring the added promotional elements feel cohesive and are contextually relevant to the content.
 

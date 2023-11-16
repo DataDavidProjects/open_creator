@@ -106,3 +106,8 @@ def render_blog_post(blog_content, template_file_path, output_file_path):
     # Write the formatted HTML content to the output file with UTF-8 encoding
     with open(output_file_path, "w", encoding="utf-8") as file:
         file.write(html_content)
+
+
+def read_html_file(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return file.read()

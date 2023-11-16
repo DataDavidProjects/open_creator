@@ -10,15 +10,11 @@ from src.utils.authentication import OPENAI_API_KEY, PROJECT_NAME, load_config
 from src.utils.blogger_utils import (
     create_blog_post,
     get_title_from_html,
+    read_html_file,
     render_blog_post,
     save_blog_content,
 )
 from src.utils.firebase_utils import list_files_in_folder
-
-
-def read_html_file(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
 
 
 def fetch_images(project_name):

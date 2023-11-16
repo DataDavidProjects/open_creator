@@ -1,3 +1,4 @@
+import textwrap
 from typing import Callable, Dict, Tuple, Union
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -298,11 +299,31 @@ def create_grid_infographic(
     except IOError:
         font = ImageFont.load_default()
 
+    # Margin from the top of the image to the start of the header text
+    top_margin = 2
+    bottom_margin = 30
+    line_spacing = font_size // 2
+
+    # Wrap the header text to fit the image width
+    wrapped_header_text = textwrap.fill(
+        header_text, width=30
+    )  # Adjust the 'width' as needed
+    header_lines = wrapped_header_text.split("\n")
+
+    text_height = sum(
+        font.getbbox(line)[3] - font.getbbox(line)[1] + line_spacing
+        for line in header_lines[:-1]
+    )
+    start_y = top_margin + max(0, (header_height - text_height) // 2)
+
     # Calculate the bounding box for the header text
-    bbox = font.getbbox(header_text)
-    title_x = (background_image.width - (bbox[2] - bbox[0])) // 2
-    title_y = (header_height - (bbox[3] - bbox[1])) // 2
-    draw.text((title_x, title_y), header_text, font=font, fill="white")
+    for i, line in enumerate(header_lines):
+        bbox = font.getbbox(line)
+        title_x = (background_image.width - (bbox[2] - bbox[0])) // 2
+        title_y = (
+            start_y + (font.getbbox(line)[3] - font.getbbox(line)[1] + line_spacing) * i
+        ) - bottom_margin
+        draw.text((title_x, title_y), line, font=font, fill="white")
 
     # Calculate the bounding box for the footer text, if provided
     if footer_text:

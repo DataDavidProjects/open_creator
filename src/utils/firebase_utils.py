@@ -67,3 +67,23 @@ def list_files_in_folder(folder_path=None):
 # local_file_path = root_images_path + file_image
 # cloud_file_path = "file_image"
 # upload_firebase_storage(local_file=local_file_path, cloud_file=cloud_file_path)
+
+
+def get_image_firebase(folder_path=None, image_name=None):
+    if not firebase_admin._apps:
+        init_firebase_storage()  # Replace with your method to initialize Firebase
+
+    # Get the Firebase storage bucket
+    bucket = storage.bucket()
+
+    # Create the full path to the image file
+    image_path = f"{folder_path}/{image_name}" if folder_path else image_name
+
+    # Get the blob for the specific image
+    blob = bucket.blob(image_path)
+
+    if blob.exists():  # Check if the blob exists
+        blob.make_public()  # Make sure the file is publicly accessible
+        return blob.public_url
+    else:
+        return None  # Return None if the image does not exist

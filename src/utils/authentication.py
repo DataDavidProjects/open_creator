@@ -21,7 +21,7 @@ GOOGLE_FONT_API_KEY = os.getenv("GOOGLE_FONT_API_KEY")
 CLIENT_SECRETS_FILE = "scripts/credentials.json"
 
 
-PROJECT_NAME = "aesthetic_destinations"
+PROJECT_NAME = "theallurecode"
 
 
 def load_config(project_name: str) -> Dict[str, Any]:

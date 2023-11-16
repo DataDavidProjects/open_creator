@@ -43,7 +43,7 @@ class Blogger:
             "temperature": temperature,
             "frequency_penalty": frequency_penalty,
             "prompt": prompt,
-            "max_tokens": 500,
+            "max_tokens": 800,
             "stop": "Welcome",
         }
 
@@ -207,7 +207,7 @@ class Blogger:
 
         paragraph = self.completion(prompt)
         if promo_link:
-            paragraph = self.generate_promo(paragraph, promo_link, "append", seo)
+            paragraph = self.generate_promo(paragraph, promo_link, "off", seo)
 
         return paragraph
 
@@ -347,3 +347,81 @@ class Blogger:
         optimized_content = self.completion(prompt=prompt)
 
         return optimized_content
+
+
+import os
+
+import requests
+
+
+def download_font(api_key: str, save_to: str, family: str, style: str = "regular"):
+    """
+    Downloads a specific font style from the Google Fonts API and saves it to a given path.
+
+    Parameters:
+    api_key (str): The API key for authenticating with the Google Fonts API.
+    save_to (str): The file path where the font should be saved.
+    family (str): The font family to download.
+    style (str): The style of the font to download (e.g., 'regular', 'italic', '700', etc.).
+
+    Returns:
+    None
+    """
+    # Endpoint for the Google Fonts API
+    endpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
+
+    # Parameters to be sent with the API request
+    params = {"key": api_key}
+
+    # Perform the GET request to the Google Fonts API
+    response = requests.get(endpoint, params=params)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        fonts_list = response.json().get("items", [])
+
+        # Find the requested font family
+        font_info = next(
+            (font for font in fonts_list if font["family"].lower() == family.lower()),
+            None,
+        )
+
+        if font_info:
+            # Check if the requested style is available for the font
+            if style.lower() in font_info["variants"]:
+                # Construct the URL to download the font
+                font_url = font_info["files"][style.lower()]
+                # Download the font file
+                font_response = requests.get(font_url)
+                if font_response.status_code == 200:
+                    # Ensure the save_to directory exists
+                    os.makedirs(os.path.dirname(save_to), exist_ok=True)
+
+                    file_path = os.path.join(
+                        save_to, f"{family.replace(' ', '_')}_{style}.ttf"
+                    )
+
+                    # Save the font file
+                    with open(file_path, "wb") as font_file:
+                        font_file.write(font_response.content)
+                    print(
+                        f"Font '{family}' with style '{style}' has been downloaded to '{save_to}'."
+                    )
+                else:
+                    raise Exception(
+                        f"Failed to download the font, status code: {font_response.status_code}"
+                    )
+            else:
+                raise ValueError(f"Style '{style}' not found for family '{family}'.")
+        else:
+            raise ValueError(f"Font family '{family}' not found.")
+    else:
+        raise Exception(f"Failed to fetch fonts, status code: {response.status_code}")
+
+
+# download_font(
+#     "AIzaSyDH9NYB5YJnl87TnIkSEknDTlz72aBRFYk",
+#     "src/assets/fonts/",
+#     "Montserrat",
+#     "700",
+# )
