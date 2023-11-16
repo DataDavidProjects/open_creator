@@ -420,7 +420,7 @@ def download_font(api_key: str, save_to: str, family: str, style: str = "regular
 
 
 # download_font(
-#     "AIzaSyDH9NYB5YJnl87TnIkSEknDTlz72aBRFYk",
+#     "*****",
 #     "src/assets/fonts/",
 #     "Montserrat",
 #     "700",
