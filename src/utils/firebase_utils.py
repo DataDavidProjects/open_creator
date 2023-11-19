@@ -75,9 +75,10 @@ def get_image_firebase(folder_path=None, image_name=None):
 
     # Get the Firebase storage bucket
     bucket = storage.bucket()
-
+    print(bucket)
     # Create the full path to the image file
     image_path = f"{folder_path}/{image_name}" if folder_path else image_name
+    print(image_path)
 
     # Get the blob for the specific image
     blob = bucket.blob(image_path)

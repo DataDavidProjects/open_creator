@@ -1,7 +1,9 @@
 import os
 import random
 import shutil
-from typing import List
+from typing import List, Tuple
+
+from PIL import Image
 
 from src.processing.image_processing import (
     create_grid_infographic,
@@ -12,14 +14,19 @@ from src.processing.image_processing import (
 from src.utils.file_operations import read_images
 
 
-def create_product_grid(background_image_path: str, product_path: str, title: str):
-    original_products = read_images(path=product_path)
+def image_grid_processing(path: str):
+    original_products = read_images(path=path)
     products = [
         pad_image_to_size(
             reduce_size(fill_transparency(img=i), size=(600, 600)), (650, 650)
         )
         for i in original_products
     ]
+    return products
+
+
+def create_product_grid(background_image_path: str, product_path: str, title: str):
+    products = image_grid_processing(path=product_path)
 
     # Sample 9 images without replacement
     n = 9
@@ -83,3 +90,54 @@ def create_mix(
         shutil.copy(product_path, os.path.join(mix_directory, product))
 
     return selected_products
+
+
+def image_collect(
+    root: str,
+    n: int,
+    subdir: List[str],
+    suffixes: List[str] = [".png", ".jpg", ".jpeg", ".bmp", ".gif"],
+) -> List[Tuple[Image.Image, str]]:
+    image_list = []
+    # Dictionary to keep track of images in each subdirectory
+    images_in_subdir = {s: [] for s in subdir}
+
+    # Pre-populate the dictionary with available images in each subdir
+    for sub in subdir:
+        full_path = os.path.join(root, sub)
+        if os.path.isdir(full_path):
+            # List all files and filter by suffixes
+            images_in_subdir[sub] = [
+                f for f in os.listdir(full_path) if f.lower().endswith(tuple(suffixes))
+            ]
+
+    # Randomly select images from the pre-populated list
+    while len(image_list) < n:
+        print("Searching...")
+        for sub in subdir:
+            if images_in_subdir[sub]:  # If there are images left in this subdir
+                chosen_file = random.choice(images_in_subdir[sub])
+                images_in_subdir[sub].remove(
+                    chosen_file
+                )  # Remove the chosen file to prevent re-selection
+                file_path = os.path.join(root, sub, chosen_file).replace("\\", "/")
+                try:
+                    with Image.open(file_path) as img:
+                        image_list.append(
+                            (
+                                pad_image_to_size(
+                                    reduce_size(
+                                        fill_transparency(img=img),
+                                        size=(600, 600),
+                                    ),
+                                    (650, 650),
+                                ),
+                                file_path,
+                            )
+                        )
+                        if len(image_list) == n:
+                            return image_list
+                except Exception as e:
+                    print(f"Failed to open file {file_path}: {e}")
+
+    return image_list

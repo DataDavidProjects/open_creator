@@ -167,3 +167,22 @@ def rename_file_type(path: str, extension: str = "png"):
             new_filename = f"{name}.{extension}"
             os.rename(os.path.join(path, filename), os.path.join(path, new_filename))
             print(f"Renamed {filename} to {new_filename}")
+
+
+def scan_for_files(directory: str, suffixes: List[str]) -> Optional[str]:
+    """
+    Scan the provided directory for files with the given suffixes and return a random file path if available.
+    :param directory: Directory to scan for files.
+    :param suffixes: List of file suffixes to look for.
+    :return: Path to a random file with a given suffix if files are found, otherwise None.
+    """
+    files = [
+        f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))
+    ]
+    matched_files = [
+        f for f in files if any(f.lower().endswith(suffix) for suffix in suffixes)
+    ]
+
+    if matched_files:
+        return os.path.join(directory, random.choice(matched_files))
+    return None

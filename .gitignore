@@ -1,7 +1,7 @@
 # Custom folders
 data/
 
-fonts/*
+fonts/*.ttf
 .env
 .vscode/
 

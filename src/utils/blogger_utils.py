@@ -5,23 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from jinja2 import Environment, FileSystemLoader
-
-# ------------------- DO NOT DELETE! -------------------------------------- #
-# # The scope for the Blogger API
-# SCOPES = ["https://www.googleapis.com/auth/blogger"]
-
-# # Create the flow using the client secrets file and the scopes
-# flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
-
-# # Run the flow to get the credentials
-# # Depending on the library version, this might be run_local_server() or run_desktop()
-# flow.run_local_server()
-
-# # Save the credentials for the next run
-# with open("token.json", "w") as token:
-#     token.write(flow.credentials.to_json())
-# ------------------------------------------------------------------------#
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 def create_blog_post(blog_id, title, content, token_json_file, draft=True):
@@ -92,13 +76,25 @@ def load_blog_content(file_path):
 
 
 def render_blog_post(blog_content, template_file_path, output_file_path):
-    env = Environment(loader=FileSystemLoader("."))
-    template = env.get_template(template_file_path)
+    # Extract the directory from the template file path
+    template_dir = os.path.dirname(template_file_path)
+    # If the directory is empty, it means a relative path was provided
+    template_dir = template_dir if template_dir else "."
+
+    # Set up the Jinja2 environment with the directory of the template file
+    env = Environment(
+        loader=FileSystemLoader(template_dir),
+        autoescape=select_autoescape(["html", "xml"]),
+    )
+
+    # Now get the template by its filename only
+    template_filename = os.path.basename(template_file_path)
+    template = env.get_template(template_filename)
 
     # Render the template with the provided blog content
     html_content = template.render(blog_content)
 
-    # # Use BeautifulSoup to pretty-print the HTML
+    # Use BeautifulSoup to pretty-print the HTML
     soup = BeautifulSoup(html_content, "html.parser")
     formatted_html = soup.prettify()
     html_content = formatted_html
