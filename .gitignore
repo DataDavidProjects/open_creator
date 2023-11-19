@@ -3,7 +3,7 @@ data/
 
 fonts/*.ttf
 .env
-.vscode/
+.vscode
 
 scripts/blogger/blog.html
 
@@ -173,3 +173,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 checkpoint.json
+src/assets/fonts/Montserrat_700.ttf

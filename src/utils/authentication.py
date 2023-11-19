@@ -140,10 +140,10 @@ def get_pinterest_credentials(
 
 # ------------------------------------------------------------------------------#
 
-USER = "theallurecode"
-response = get_pinterest_credentials(
-    PINTEREST_APP_ID,
-    PINTEREST_APP_SECRET,
-    your_code="91745d477b40802ffeb04a4636de78bb58469ad3",
-    file_path=f"src/utils/credential_pinterest_{USER}.json",
-)
+# USER = "theallurecode"
+# response = get_pinterest_credentials(
+#     PINTEREST_APP_ID,
+#     PINTEREST_APP_SECRET,
+#     your_code="***",
+#     file_path=f"src/utils/credential_pinterest_{USER}.json",
+# )

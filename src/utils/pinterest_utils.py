@@ -71,11 +71,11 @@ USER_TOKEN = "****"
 # )
 
 
-BOARD_ID = "976155356672267511"
-pin_id = create_pin(
-    token=USER_TOKEN,
-    board_id=BOARD_ID,
-    title="My Pin",
-    description="Pin Description",
-    image_url="https://firebasestorage.googleapis.com/v0/b/opencreator-1699308232742.appspot.com/o/Blog%2Ftheallurecode%2Ftheallurecode_logo.PNG?alt=media&token=ee28488d-e3dc-41c0-a9ec-3dc4c3318b36",
-)
+# BOARD_ID = "976155356672267511"
+# pin_id = create_pin(
+#     token=USER_TOKEN,
+#     board_id=BOARD_ID,
+#     title="My Pin",
+#     description="Pin Description",
+#     image_url="https://firebasestorage.googleapis.com/v0/b/opencreator-1699308232742.appspot.com/o/Blog%2Ftheallurecode%2Ftheallurecode_logo.PNG?alt=media&token=ee28488d-e3dc-41c0-a9ec-3dc4c3318b36",
+# )
