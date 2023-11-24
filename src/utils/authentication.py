@@ -27,7 +27,7 @@ PINTEREST_APP_SECRET = os.getenv("PINTEREST_APP_SECRET")
 CLIENT_SECRETS_FILE = "scripts/credentials.json"
 
 
-PROJECT_NAME = "theallurecode"
+PROJECT_NAME = "aesthetic_destinations"
 
 
 def load_config(project_name: str) -> Dict[str, Any]:

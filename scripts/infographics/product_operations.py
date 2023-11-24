@@ -18,7 +18,7 @@ def image_grid_processing(path: str):
     original_products = read_images(path=path)
     products = [
         pad_image_to_size(
-            reduce_size(fill_transparency(img=i), size=(600, 600)), (650, 650)
+            reduce_size(fill_transparency(img=i), size=(500, 500)), (550, 550)
         )
         for i in original_products
     ]

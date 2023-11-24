@@ -69,20 +69,22 @@ def blogger_job():
         background_path=background_image_path,
         images=selected_products_df["file"].tolist(),
         header_text=title.upper(),
+        font_path="src/assets/fonts/Montserrat_700.ttf",
     )
 
     # Saving the generated infographic to the filesystem
+    image_id = unique_id.hex[:5]
     file_name = os.path.join(
         project_path,
         "images",
         "content",
         "infographics",
-        f"infographic_{run_counter:02d}.png",
+        f"infographic_{image_id}.png",
     )
     infographic.save(file_name)
 
     # Uploading the infographic to Firebase for online access
-    cloud_file = f"infographic_{run_counter:02d}.png"
+    cloud_file = f"infographic_{image_id}.png"
     upload_firebase_storage(
         local_file=file_name,
         cloud_file=f"Blog/{project_name}/blogger/{cloud_file}",
@@ -102,7 +104,7 @@ def blogger_job():
     # Assembling the content for the blog post
     template_file_path = os.path.join(project_path, "templates", "blog_template.html")
     output_file_path = os.path.join(project_path, "tables", f"blog_{unique_id}.html")
-    introduction = "Discover the latest trends"
+    introduction = "Click down on the list to shop my fall favourites!"
     products = [
         {"name": row["name"], "href": row["link"]} for _, row in data.iterrows()
     ]
@@ -139,7 +141,7 @@ def blogger_job():
     run_counter += 1
 
 
-# Schedule the job every 10 seconds
+# Schedule the job every x
 schedule.every(10).seconds.do(blogger_job)
 
 while True:

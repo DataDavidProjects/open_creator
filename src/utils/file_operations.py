@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+import time
 from typing import List, Optional
 
 from PIL import Image
@@ -186,3 +187,29 @@ def scan_for_files(directory: str, suffixes: List[str]) -> Optional[str]:
     if matched_files:
         return os.path.join(directory, random.choice(matched_files))
     return None
+
+
+def measure_time(func):
+    def wrapper():
+        start = time.time()
+        func()
+        end = time.time()
+        print(f"Execution time: {end - start} seconds")
+
+    return wrapper
+
+
+import time
+from functools import wraps
+
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"Execution time of {func.__name__}: {end - start} seconds")
+        return result
+
+    return wrapper
