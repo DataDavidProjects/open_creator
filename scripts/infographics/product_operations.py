@@ -118,7 +118,7 @@ def image_collect(
 
     # Randomly select images from the pre-populated list
     while len(image_list) < n:
-        print("Searching...")
+        # print("Searching...")
         for sub in subdir:
             if images_in_subdir[sub]:  # If there are images left in this subdir
                 chosen_file = random.choice(images_in_subdir[sub])
@@ -234,17 +234,24 @@ class ProductsInfographic:
             )  # Assuming a padding of 10 on each side
 
             # Calculate the position to start the text
-            text_position = (10, 1700)  # Starting 10 pixels in from the top-left corner
+            text_position = (
+                150,
+                1700,
+            )  # Starting 10 pixels in from the top-left corner
 
             # Draw the multiline text
-            draw_multiline_text(
-                draw,
-                text_position,
-                text,
-                font,
-                text_color,
-                max_text_width,
-                alignment="center",
+            # draw_multiline_text(
+            #     draw,
+            #     text_position,
+            #     text,
+            #     font,
+            #     text_color,
+            #     max_text_width,
+            #     alignment="center",
+            # )
+            letter_spacing = 10
+            draw_text_with_spacing(
+                draw, text_position, text, font, "black", letter_spacing
             )
 
             text_width, text_height = font.getbbox(text)[2], font.getbbox(text)[3]
@@ -331,7 +338,7 @@ class ProductsInfographic:
 
         # Resize and paste the image
         image_area_height = int(
-            (section_bottom_right[1] - section_top_left[1]) * 0.65
+            (section_bottom_right[1] - section_top_left[1]) * 0.70
         )  # 70% of the card height
 
         self.canvas.paste(product_image, (image_pos[0] - 0, image_pos[1]))

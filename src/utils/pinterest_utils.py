@@ -5,6 +5,7 @@
 # https://developers.pinterest.com/docs/api/v5/#operation/boards/list
 
 
+import requests
 from pinterest.client import PinterestSDKClient
 from pinterest.organic.boards import Board
 from pinterest.organic.pins import Pin
@@ -79,3 +80,39 @@ USER_TOKEN = "****"
 #     description="Pin Description",
 #     image_url="https://firebasestorage.googleapis.com/v0/b/opencreator-1699308232742.appspot.com/o/Blog%2Ftheallurecode%2Ftheallurecode_logo.PNG?alt=media&token=ee28488d-e3dc-41c0-a9ec-3dc4c3318b36",
 # )
+
+
+def api_endpoint(header, body, endpoint):
+    response = requests.get(url=endpoint, headers=header, json=body)
+    return response.json()  # Assuming the response is in JSON format
+
+
+def list_pinterest_boards(access_token):
+    endpoint = "https://api.pinterest.com/v5/boards"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    response = requests.get(endpoint, headers=headers)
+    return response.json()
+
+
+def create_pinterest_pin(access_token, board_id, title, link, image_url, description):
+    endpoint = "https://api.pinterest.com/v5/pins"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    # Only include parameters in the body if they are not None
+    body = {
+        "board_id": board_id,
+        "media_source": {"source_type": "image_url", "url": image_url},
+        "link": link,
+        "title": title,
+        "description": description,
+    }
+
+    response = requests.post(endpoint, headers=headers, json=body)
+    return response.json()
