@@ -1,7 +1,7 @@
 import textwrap
-from typing import Callable, Dict, Tuple, Union
+from typing import Callable, Dict, List, Tuple, Union
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 
 def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
@@ -27,9 +27,6 @@ def reduce_size(img: Image.Image, size: Tuple[int, int]) -> Image.Image:
     resized_img.thumbnail(size)
 
     return resized_img
-
-
-from PIL import Image
 
 
 def pad_image_to_size(img: Image.Image, target_size: Tuple[int, int]) -> Image.Image:
@@ -231,7 +228,7 @@ def apply_portrait(
 def image_effects(
     image: Image,
     effect: str = None,
-    effect_dict: Dict[str, Callable] = {},
+    effect_dict: Dict[str, Callable] = None,
 ) -> Image:
     """Applies the specified effect to the image.
 
@@ -248,11 +245,6 @@ def image_effects(
         image = effect_dict[effect](image)
 
     return image
-
-
-from typing import List
-
-from PIL import Image, ImageDraw, ImageFont
 
 
 def create_grid_infographic(

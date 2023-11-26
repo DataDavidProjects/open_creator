@@ -1,9 +1,11 @@
 import os
 import random
 import shutil
+import sys
+from dataclasses import dataclass
 from typing import List, Tuple
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 from src.processing.image_processing import (
     create_grid_infographic,
@@ -11,14 +13,17 @@ from src.processing.image_processing import (
     pad_image_to_size,
     reduce_size,
 )
+from src.processing.text_processing import draw_multiline_text, draw_text_with_spacing
 from src.utils.file_operations import read_images
+
+sys.path.append(".")
 
 
 def image_grid_processing(path: str):
     original_products = read_images(path=path)
     products = [
         pad_image_to_size(
-            reduce_size(fill_transparency(img=i), size=(500, 500)), (550, 550)
+            reduce_size(fill_transparency(img=i), size=(400, 400)), (410, 410)
         )
         for i in original_products
     ]
@@ -128,9 +133,9 @@ def image_collect(
                                 pad_image_to_size(
                                     reduce_size(
                                         fill_transparency(img=img),
-                                        size=(600, 600),
+                                        size=(250, 300),
                                     ),
-                                    (650, 650),
+                                    (310, 310),
                                 ),
                                 file_path,
                             )
@@ -141,3 +146,252 @@ def image_collect(
                     print(f"Failed to open file {file_path}: {e}")
 
     return image_list
+
+
+@dataclass
+class ProductsInfographic:
+    canvas: Image = None
+
+    def create_canvas(self, w: int, h: int, color: str):
+        if not color.startswith("#"):
+            color = "#" + color
+        self.canvas = Image.new("RGB", (w, h), color)
+        return self
+
+    def create_section(
+        self, top_left: Tuple[int, int], bottom_right: Tuple[int, int], color: str
+    ):
+        if self.canvas is None:
+            raise ValueError("Canvas not created.")
+        if not color.startswith("#"):
+            color = "#" + color
+
+        draw = ImageDraw.Draw(self.canvas)
+        draw.rectangle([top_left, bottom_right], fill=color)
+        return self
+
+    def add_header(
+        self,
+        height,
+        color="#6f42c1",
+        text="",
+        title_font_path="arial.ttf",
+        title_font_size=24,
+        text_color="black",
+    ):
+        # Create the header section
+        self.create_section((0, 0), (self.canvas.width, height), color)
+
+        if text:  # Check if any text is provided
+            draw = ImageDraw.Draw(self.canvas)
+            font = ImageFont.truetype(title_font_path, title_font_size)
+
+            # Calculate maximum text width
+            max_text_width = self.canvas.width  # Assuming a padding of 10 on each side
+
+            # Calculate the position to start the text
+            text_position = (10, 80)  # Starting 10 pixels in from the top-left corner
+
+            # Draw the multiline text
+            draw_multiline_text(
+                draw,
+                text_position,
+                text,
+                font,
+                text_color,
+                max_text_width,
+                alignment="center",
+            )
+
+            font = ImageFont.truetype("arial.ttf", title_font_size / (1.68 * 1.5))
+            # Draw the multiline text
+            letter_spacing = 20
+            draw_text_with_spacing(
+                draw, (430, 150), "GIFT GUIDES", font, "black", letter_spacing
+            )
+
+    def add_footer(
+        self,
+        height,
+        color="#6f42c1",
+        text="",
+        title_font_path="arial.ttf",
+        title_font_size=24,
+        text_color="black",
+    ):
+        self.create_section(
+            (0, self.canvas.height - height),
+            (self.canvas.width, self.canvas.height),
+            color,
+        )
+        if text:  # Check if any text is provided
+            draw = ImageDraw.Draw(self.canvas)
+            font = ImageFont.truetype(title_font_path, title_font_size)
+
+            # Calculate maximum text width
+            max_text_width = (
+                self.canvas.width - 5
+            )  # Assuming a padding of 10 on each side
+
+            # Calculate the position to start the text
+            text_position = (10, 1700)  # Starting 10 pixels in from the top-left corner
+
+            # Draw the multiline text
+            draw_multiline_text(
+                draw,
+                text_position,
+                text,
+                font,
+                text_color,
+                max_text_width,
+                alignment="center",
+            )
+
+            text_width, text_height = font.getbbox(text)[2], font.getbbox(text)[3]
+
+            # Calculate the bounding box of the text
+            text_bbox = font.getbbox(text)
+            text_width = text_bbox[2]
+            text_height = text_bbox[3]
+
+            # Calculate the position to start the text
+            text_x = (self.canvas.width - text_width) // 2
+            text_y = self.canvas.height - height + (height - text_height) // 2
+
+            # Positions for the top and bottom lines relative to the text
+            line_top_y = text_y - (
+                title_font_size // 4
+            )  # Adjust the division factor as needed for desired spacing
+            line_bottom_y = (
+                text_y + text_height + (title_font_size // 4)
+            )  # Adjust accordingly
+
+            # Adjust the line start and end positions if needed
+            line_start_x = text_x - (title_font_size // 4)
+            line_end_x = text_x + text_width + (title_font_size // 4)
+
+            # Draw the top line
+            draw.line(
+                [(line_start_x - 250, line_top_y), (line_end_x + 250, line_top_y)],
+                fill="black",
+                width=1,
+            )
+
+            # Draw the bottom line
+            draw.line(
+                [
+                    (line_start_x - 250, line_bottom_y),
+                    (line_end_x + 250, line_bottom_y),
+                ],
+                fill="black",
+                width=1,
+            )
+
+    def add_product_card(
+        self,
+        section_top_left: Tuple[int, int],
+        section_bottom_right: Tuple[int, int],
+        title: str,
+        product_image: Image,
+        description: str,
+        title_font_path: str,
+        desc_font_path: str,
+        title_font_size: int,
+        desc_font_size: int,
+    ):
+        if self.canvas is None:
+            raise ValueError("Canvas not created.")
+
+        section_width = section_bottom_right[0] - section_top_left[0]
+        padding = 5  # Padding from the edge of the section
+
+        title_font = ImageFont.truetype(title_font_path, title_font_size)
+        desc_font = ImageFont.truetype(desc_font_path, desc_font_size)
+
+        title_pos = (section_top_left[0] + padding, section_top_left[1] + padding)
+        image_pos = (
+            section_top_left[0] + padding,
+            title_pos[1] + title_font.getbbox(title)[3] + padding,
+        )
+
+        max_text_width = section_width - (2 * padding)
+
+        draw = ImageDraw.Draw(self.canvas)
+
+        # Draw title
+        draw_multiline_text(
+            draw,
+            title_pos,
+            title,
+            title_font,
+            "black",
+            max_text_width,
+            alignment="center",
+        )
+
+        # Resize and paste the image
+        image_area_height = int(
+            (section_bottom_right[1] - section_top_left[1]) * 0.65
+        )  # 70% of the card height
+
+        self.canvas.paste(product_image, (image_pos[0] - 0, image_pos[1]))
+
+        # Draw description
+        desc_pos = (
+            section_top_left[0] + padding,
+            image_pos[1] + image_area_height + padding,
+        )
+        draw_multiline_text(
+            draw,
+            desc_pos,
+            description,
+            desc_font,
+            "black",
+            max_text_width,
+            alignment="center",
+        )
+
+        # Calculate the bounding box of the description text
+        text_bbox = desc_font.getbbox(description, anchor="lt")
+        line_y_position = (
+            desc_pos[1] + text_bbox[3] + padding // 2
+        )  # Adjust the position of the line to be under the text
+
+        # Draw design line under the description
+        draw.line(
+            [
+                (section_top_left[0] + 80, line_y_position + 50),
+                (section_bottom_right[0] - 80, line_y_position + 50),
+            ],
+            fill="black",
+            width=1,
+        )
+
+        return self
+
+
+def create_grid_positions(
+    canvas_width,
+    canvas_height,
+    num_columns,
+    num_rows,
+    header_height,
+    footer_height,
+    margin,
+    vertical_margin,
+):
+    card_width = (canvas_width - (num_columns + 1) * margin) // num_columns
+    card_height = (
+        canvas_height - header_height - footer_height - (num_rows - 1) * vertical_margin
+    ) // num_rows
+    positions = []
+    for row in range(num_rows):
+        for col in range(num_columns):
+            top_left_x = col * (card_width + margin) + margin
+            top_left_y = row * (card_height + vertical_margin) + header_height + margin
+            bottom_right_x = top_left_x + card_width
+            bottom_right_y = top_left_y + card_height
+            positions.append(
+                ((top_left_x, top_left_y), (bottom_right_x, bottom_right_y))
+            )
+    return positions

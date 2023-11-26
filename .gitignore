@@ -174,3 +174,4 @@ cython_debug/
 #.idea/
 checkpoint.json
 src/assets/fonts/Montserrat_700.ttf
+src/assets/fonts/FLOWRISE.ttf

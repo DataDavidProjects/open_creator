@@ -1,13 +1,12 @@
 import sys
-
-sys.path.append(".")
-
+import textwrap
 from typing import Any, Dict, List
 
 from openai import OpenAI
 
 from src.utils.authentication import OPENAI_API_KEY, PROJECT_NAME, load_config
 
+sys.path.append(".")
 config = load_config(project_name=PROJECT_NAME)
 api_key = OPENAI_API_KEY
 
@@ -425,3 +424,48 @@ def download_font(api_key: str, save_to: str, family: str, style: str = "regular
 #     "Montserrat",
 #     "700",
 # )
+
+
+def draw_multiline_text(
+    draw, position, text, font, text_color, max_width, alignment="left", line_space=5
+):
+    # First, estimate the maximum number of characters per line.
+    test_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" * 4
+    test_bbox = font.getbbox(test_string)
+    average_char_width = (test_bbox[2] - test_bbox[0]) / len(test_string)
+
+    max_chars_per_line = max_width // average_char_width
+
+    # Wrap the text to fit within the specified width.
+    wrapped_text = textwrap.wrap(text, width=int(max_chars_per_line))
+
+    y_text = position[1]
+    for line in wrapped_text:
+        # Get the bounding box of the line of text.
+        line_bbox = font.getbbox(line)
+
+        # Calculate the x position based on the alignment.
+        if alignment == "left":
+            x_text = position[0]
+        elif alignment == "center":
+            x_text = position[0] + (max_width - (line_bbox[2] - line_bbox[0])) / 2
+        elif alignment == "right":
+            x_text = position[0] + max_width - (line_bbox[2] - line_bbox[0])
+        else:
+            raise ValueError("Invalid alignment: Choose from 'left', 'center', 'right'")
+
+        # Draw the text.
+        draw.text((x_text, y_text), line, font=font, fill=text_color)
+
+        # Move to the next line.
+        y_text += line_bbox[3] - line_bbox[1] + line_space
+
+    return y_text
+
+
+def draw_text_with_spacing(draw, position, text, font, fill, spacing):
+    x, y = position
+    for char in text:
+        draw.text((x, y), char, font=font, fill=fill)
+        char_width = font.getbbox(char)[2]
+        x += char_width + spacing  # Move to the right by char width + spacing

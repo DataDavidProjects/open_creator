@@ -1,12 +1,14 @@
 import os
 import random
 import sys
+import time
+
+from scripts.infographics.product_operations import create_product_grid
 
 sys.path.append(".")
 
-from product_operations import create_product_grid
 
-project_name = "theallurecode"
+PROJECT_NAME = "theallurecode"
 
 
 title_mapping = {
@@ -44,23 +46,21 @@ title_mapping = {
 
 
 background_image_path = (
-    f"src/assets/data/{project_name}/blog/images/product_template.png"
+    f"src/assets/data/{PROJECT_NAME}/blog/images/product_template.png"
 )
-output_file = f"src/assets/data/{project_name}/blog/images/"
+output_file = f"src/assets/data/{PROJECT_NAME}/blog/images/"
 
-
-import time
 
 start_time = time.time()
 
 # Create for each category n infographics
-total = 50
+TOTAL = 50
 for category in list(title_mapping.keys()):
     print(category)
     # Generate and save  infographics
-    for i in range(1, total):
+    for i in range(1, TOTAL):
         # create the path
-        product_path = f"src/assets/data/{project_name}/blog/images/products/{category}"
+        product_path = f"src/assets/data/{PROJECT_NAME}/blog/images/products/{category}"
         # rename them to png
         # rename_file_type(product_path)
 
