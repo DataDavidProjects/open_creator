@@ -12,7 +12,8 @@ config = load_config(project_name=PROJECT_NAME)
 USER_TOKEN = config["THEALLURECODE_PINTEREST_ACCESS_TOKEN"]
 
 
-BOARD_ID = "***"
+BOARD_ID = "875668789986577789"
+
 
 title = "AMAZING CHRISTMAS GIFTS IDEAS FOR MOMS"
 link = "https://benable.com/TheAllureCode/must-have-makeup-products"

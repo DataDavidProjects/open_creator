@@ -88,3 +88,18 @@ def get_image_firebase(folder_path=None, image_name=None):
         return blob.public_url
     else:
         return None  # Return None if the image does not exist
+
+
+def fetch_images(project_name):
+    """
+    Fetch images from Firebase.
+    Args:
+        project_name (str): The name of the project.
+    Returns:
+        tuple: A list of image URLs and the cover image URL.
+    """
+    firebase_imgs = list_files_in_folder(f"Blog/{project_name}/")
+    return (
+        firebase_imgs[1:],
+        firebase_imgs[0],
+    )

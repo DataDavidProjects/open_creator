@@ -187,10 +187,12 @@ class ProductsInfographic:
             font = ImageFont.truetype(title_font_path, title_font_size)
 
             # Calculate maximum text width
-            max_text_width = self.canvas.width  # Assuming a padding of 10 on each side
+            max_text_width = (
+                self.canvas.width + 100
+            )  # Assuming a padding of 10 on each side
 
             # Calculate the position to start the text
-            text_position = (10, 80)  # Starting 10 pixels in from the top-left corner
+            text_position = (50, 80)  # Starting 10 pixels in from the top-left corner
 
             # Draw the multiline text
             draw_multiline_text(
@@ -200,14 +202,14 @@ class ProductsInfographic:
                 font,
                 text_color,
                 max_text_width,
-                alignment="center",
+                alignment="left",
             )
 
-            font = ImageFont.truetype("arial.ttf", title_font_size / (1.68 * 1.5))
+            font = ImageFont.truetype("arial.ttf", title_font_size / (1.68 * 1.8))
             # Draw the multiline text
             letter_spacing = 20
             draw_text_with_spacing(
-                draw, (430, 150), "GIFT GUIDES", font, "black", letter_spacing
+                draw, (400, 180), "GIFT GUIDES", font, "black", letter_spacing
             )
 
     def add_footer(

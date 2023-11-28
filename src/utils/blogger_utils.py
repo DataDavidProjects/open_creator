@@ -40,7 +40,7 @@ def create_blog_post(blog_id, title, content, token_json_file, draft=True):
 
     # Make the POST request to create a new blog post
     response = requests.post(url, headers=headers, json=data)
-    return response
+    return response.json()
 
 
 def get_title_from_html(html_content):
@@ -107,3 +107,54 @@ def render_blog_post(blog_content, template_file_path, output_file_path):
 def read_html_file(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
+
+
+def retrieve_blog_posts(blog_id, token_json_file):
+    """
+    Retrieve the blog posts using Blogger API, using credentials from a token json file.
+    Parameters:
+    - blog_id: str. The ID of the blog for which to retrieve posts.
+    - token_json_file: str. The file path of the token json file with credentials.
+    Returns:
+
+    - response: requests.Response. The response from the API call.
+    """
+    # Load the saved credentials from token.json
+    creds = None
+    if os.path.exists(token_json_file):
+        creds = Credentials.from_authorized_user_file(token_json_file)
+        # If there are no (valid) credentials available, let the user log in.
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                raise Exception("No valid credentials provided.")
+    else:
+        raise FileNotFoundError("Token.json file not found.")
+    # Extract the access token from credentials
+    access_token = creds.token
+    # Set up the Blogger API request
+    url = f"https://www.googleapis.com/blogger/v3/blogs/{blog_id}/posts/"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    # Make the GET request to retrieve blog posts
+    return requests.get(url, headers=headers).json()
+
+
+def get_last_blog_post_info(response_json):
+    """
+    Retrieve the URL and ID of the last blog post from a Blogger API JSON response.
+
+    Parameters:
+    - response_json: dict. A JSON response from the Blogger API containing blog posts.
+
+    Returns:
+    - tuple: A tuple containing the URL and ID of the last blog post.
+    """
+    # Retrieve the last blog post from the items list
+    last_blog_post = response_json["items"][-1] if response_json.get("items") else None
+
+    # Extract the URL and ID if the post is available
+    last_blog_post_url = last_blog_post.get("url") if last_blog_post else None
+    last_blog_post_id = last_blog_post.get("id") if last_blog_post else None
+
+    return last_blog_post_url, last_blog_post_id
