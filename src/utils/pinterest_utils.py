@@ -63,7 +63,7 @@ def create_pin(
     return pin_create.id
 
 
-USER_TOKEN = "****"
+# USER_TOKEN = "****"
 
 
 # Usage Example:
@@ -115,4 +115,35 @@ def create_pinterest_pin(access_token, board_id, title, link, image_url, descrip
     }
 
     response = requests.post(endpoint, headers=headers, json=body)
+    return response.json()
+
+
+def get_trending_keywords(region: str, trend_type: str, params: dict, access_token):
+    """
+    Retrieves trending keywords from Pinterest API based on specified criteria.
+
+    This function makes a GET request to the Pinterest API's trending keywords endpoint.
+    It fetches trending keywords for a given region and trend type, with additional filter
+    options provided through query parameters.
+
+    Args:
+    - region (str): The geographical region for which to retrieve trending keywords.
+    - trend_type (str): The type of trend for which to retrieve keywords (e.g., 'food_drink').
+    - params (dict): A dictionary of query parameters to filter the results. This can include
+      parameters such as interests, genders, ages, normalization options, and limit.
+    - access_token (str): The access token for authenticating with the Pinterest API.
+
+    Returns:
+    - dict: A dictionary containing the JSON response from the API. This typically includes
+      details about the trending keywords based on the provided criteria.
+    """
+    header = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    endpoint = f"https://api.pinterest.com/v5/trends/keywords/{region}/top/{trend_type}"
+
+    response = requests.get(url=endpoint, headers=header, params=params)
+
     return response.json()

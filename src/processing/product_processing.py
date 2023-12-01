@@ -2,8 +2,9 @@ import os
 import random
 import shutil
 import sys
+import textwrap
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -133,9 +134,9 @@ def image_collect(
                                 pad_image_to_size(
                                     reduce_size(
                                         fill_transparency(img=img),
-                                        size=(250, 300),
+                                        size=(220, 235),
                                     ),
-                                    (310, 310),
+                                    (230, 245),
                                 ),
                                 file_path,
                             )
@@ -152,10 +153,21 @@ def image_collect(
 class ProductsInfographic:
     canvas: Image = None
 
-    def create_canvas(self, w: int, h: int, color: str):
+    def create_canvas(self, w: int, h: int, color: str, image_path: str = None):
+        # Create canvas with the specified color
         if not color.startswith("#"):
             color = "#" + color
         self.canvas = Image.new("RGB", (w, h), color)
+
+        # If an image path is provided, open and paste the image
+        if image_path is not None:
+            with Image.open(image_path) as img:
+                # Optionally resize or process the image
+                img = img.resize((w, h))
+
+                # Paste the image onto the canvas
+                self.canvas.paste(img, (0, 0))
+
         return self
 
     def create_section(
@@ -296,6 +308,14 @@ class ProductsInfographic:
                 width=1,
             )
 
+    def add_text(self, text, position, font, color, max_width, alignment="left"):
+        if self.canvas is None:
+            raise ValueError("Canvas not created.")
+        draw = ImageDraw.Draw(self.canvas)
+        text = textwrap.fill(text, width=max_width)
+        draw.text(position, text, font=font, fill=color)
+        return self
+
     def add_product_card(
         self,
         section_top_left: Tuple[int, int],
@@ -367,14 +387,14 @@ class ProductsInfographic:
         )  # Adjust the position of the line to be under the text
 
         # Draw design line under the description
-        draw.line(
-            [
-                (section_top_left[0] + 80, line_y_position + 50),
-                (section_bottom_right[0] - 80, line_y_position + 50),
-            ],
-            fill="black",
-            width=1,
-        )
+        # draw.line(
+        #     [
+        #         (section_top_left[0] + 80, line_y_position + 50),
+        #         (section_bottom_right[0] - 80, line_y_position + 50),
+        #     ],
+        #     fill="black",
+        #     width=1,
+        # )
 
         return self
 
@@ -404,3 +424,168 @@ def create_grid_positions(
                 ((top_left_x, top_left_y), (bottom_right_x, bottom_right_y))
             )
     return positions
+
+
+@dataclass
+class Infographic:
+
+    """
+    Create a generic canvas for infographic.
+
+
+    Returns:
+        Image: canvas after operations
+    """
+
+    canvas: Image = None
+
+    def create_canvas(self, w: int, h: int, color: str):
+        """
+        Create a canvas given args.
+
+        Args:
+            w (int): width of canvas
+            h (int): height of canvas
+            color (str): color of canvas
+
+        Returns:
+            self: for chain operation
+        """
+        if not color.startswith("#"):
+            color = "#" + color
+        self.canvas = Image.new("RGB", (w, h), color)
+        return self
+
+    def create_section(
+        self,
+        coordinates: List[Tuple[int, int]],
+        color: str,
+        corners: Union[int, str, None] = None,
+        line_color: str = None,
+        line_width: int = 0,
+    ):
+        """
+        Create a section given coordinates with optional rounded corners or a circle.
+
+        Args:
+            coordinates (List[Tuple[int, int]]): List of two tuples defining the top-left and bottom-right points.
+            color (str): Fill color of the section.
+            corners (Union[int, str, None]): Radius of the rounded corners, or 'circle' for a full circle.
+            line_color (str, optional): Color of the line if corners are rounded or circle is drawn.
+            line_width (int, optional): Thickness of the line if corners are rounded or circle is drawn.
+        """
+        if self.canvas is None:
+            raise ValueError("Canvas not created.")
+
+        draw = ImageDraw.Draw(self.canvas)
+        top_left, bottom_right = coordinates
+        left, top = top_left
+        right, bottom = bottom_right
+
+        if corners == "circle":
+            # Calculate radius for a circle
+            width = right - left
+            height = bottom - top
+            radius = min(width, height) // 2
+            center = (left + radius, top + radius)
+            draw.ellipse(
+                [
+                    center[0] - radius,
+                    center[1] - radius,
+                    center[0] + radius,
+                    center[1] + radius,
+                ],
+                fill=color,
+                outline=line_color,
+                width=line_width,
+            )
+        elif corners is not None:
+            # Draw a rounded rectangle
+            draw.rounded_rectangle(
+                [top_left, bottom_right],
+                fill=color,
+                radius=corners,
+                outline=line_color,
+                width=line_width,
+            )
+        else:
+            # Draw a regular rectangle if no corners are specified
+            draw.rectangle([top_left, bottom_right], fill=color)
+
+        return self
+
+    def add_text(
+        self,
+        text: str,
+        position: List[Tuple[int, int]],
+        loaded_font,
+        color: str,
+        max_width: int = 100,
+        alignment="left",
+        line_space: int = 5,
+        char_space: int = 0,
+    ):
+        """
+        Add text to the infographic with specified formatting.
+
+        Args:
+            text (str): Text to be added.
+            position (Tuple[int, int]): Starting coordinates for the text.
+            loaded_font (ImageFont): Font to be used for the text.
+            color (str): Color of the text.
+            max_width (int): Maximum width for text wrapping.
+            alignment (str): Alignment of the text ('left', 'center', 'right').
+            line_space (int): Space between lines.
+            char_space (int): Space between characters.
+        """
+        draw = ImageDraw.Draw(self.canvas)
+
+        # Wrap text to fit within the specified width.
+        single_char_bbox = loaded_font.getbbox("A")
+        single_char_width = single_char_bbox[2] - single_char_bbox[0]
+        max_chars_per_line = int(max_width // (single_char_width + char_space))
+        wrapped_text = textwrap.wrap(text, width=max_chars_per_line)
+
+        x, y = position
+        for line in wrapped_text:
+            if char_space != 0:
+                # Draw text with character spacing
+                for char in line:
+                    draw.text((x, y), char, font=loaded_font, fill=color)
+                    char_width = loaded_font.getbbox(char)[2]
+                    x += char_width + char_space
+            else:
+                # Calculate x position based on alignment using font.getbbox
+                line_bbox = loaded_font.getbbox(line)
+                line_width = line_bbox[2] - line_bbox[0]
+                line_height = line_bbox[3] - line_bbox[1]
+
+                if alignment == "center":
+                    x = position[0] + (max_width - line_width) // 2
+                elif alignment == "right":
+                    x = position[0] + max_width - line_width
+                else:
+                    x = position[0]
+
+                draw.text((x, y), line, font=loaded_font, fill=color)
+
+            # Move to the next line
+            y += line_height + line_space
+
+        return self
+
+    def add_image(self, image, position):
+        """
+        Add an image to the infographic at the specified position.
+
+        Args:
+            image (PIL.Image): Image to be added.
+            position (tuple): Top-left position where the image will be placed.
+        """
+        if self.canvas is None:
+            raise ValueError("Canvas not created.")
+
+        # Paste the image onto the canvas at the given position
+        self.canvas.paste(image, position, mask=image if image.mode == "RGBA" else None)
+
+        return self

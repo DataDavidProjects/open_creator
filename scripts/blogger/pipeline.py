@@ -159,7 +159,7 @@ for n, ((top_left, bottom_right), row) in enumerate(
         bottom_right,
         HEADER if n == 4 else "",
         product_image,
-        f"{n+1}.{row.name}",
+        f"{n+1}. {row.name}",
         HEADER_FONT_PATH,
         DESC_FONT_PATH,
         int(HEADER_FONT_SIZE),
@@ -249,8 +249,15 @@ USER_TOKEN = config["THEALLURECODE_PINTEREST_ACCESS_TOKEN"]
 BOARD_ID = "875668789986577789"
 PIN_TITLE = TITLE
 PIN_IMAGE_URL = firebase_image
-PIN_DESCRIPTION = "These essential products are personally selected, tested and recommended and they are scientifically proven to work and being worth the money. Check TheAllureCode Blog for more content 💋 "
 
+# Get Keywords
+params = {"interests": ["beauty", "womens_fashion"], "limit": 10}
+INTERESTS = ["beauty", "womens_fashion", "christmas_gifts"]
+REGION = "us"
+TREND_TYPE = "monthly"
+# trends = get_trending_keywords(REGION, TREND_TYPE, params, USER_TOKEN)
+
+PIN_DESCRIPTION = ""
 
 PIN_LINK = BLOG_URL
 

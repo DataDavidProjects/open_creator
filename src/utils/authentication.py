@@ -1,11 +1,11 @@
 import sys
+from typing import *
 
 sys.path.append(".")
 
 
 import json
 import os
-from typing import *
 
 import yaml
 from dotenv import load_dotenv
@@ -140,10 +140,30 @@ def get_pinterest_credentials(
 
 # ------------------------------------------------------------------------------#
 
-# USER = "theallurecode"
+# USER = "dataprojects"
 # response = get_pinterest_credentials(
 #     PINTEREST_APP_ID,
 #     PINTEREST_APP_SECRET,
-#     your_code="***",
+#     your_code="****",
 #     file_path=f"src/utils/credential_pinterest_{USER}.json",
 # )
+
+# scopes = (
+#     "ads:read,"
+#     "boards:read,"
+#     "boards:read_secret,"
+#     "boards:write,"
+#     "boards:write_secret,"
+#     "pins:read,"
+#     "pins:read_secret,"
+#     "pins:write,"
+#     "pins:write_secret,"
+#     "user_accounts:read,"
+#     "catalogs:read,"
+#     "catalogs:write"
+# )
+
+# url_auth = f"https://www.pinterest.com/oauth/?client_id=1491708&redirect_uri=https://www.dataprojects.cloud/&response_type=code&scope={scopes}"
+
+
+# print(url_auth)
