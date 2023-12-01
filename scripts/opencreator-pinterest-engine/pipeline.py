@@ -131,6 +131,119 @@ TITLE_TEXT = random.sample(
     ],
     1,
 )[0]
+
+KEYWORDS = {
+    "General": [
+        "rare beauty",
+        "beauty aesthetic",
+        "makeup ideas",
+        "makeup tips",
+        "sol de janeiro perfume",
+        "victoria secret perfume",
+        "ysl perfume",
+        "makeup products",
+        "too faced makeup",
+        "wishlist ideas",
+        "winter beauty",
+        "skincare products",
+        "skincare routine",
+        "skincare tips",
+        "skincare aesthetic",
+        "beauty",
+        "christmas gifts",
+        "gift guide 2023",
+        "sephora finds",
+        "amazon finds",
+        "that girl aesthetic",
+        "gifts for her",
+        "christmas wishlist",
+        "makeup tutorial",
+        "vanilla perfume",
+        "best smelling perfume",
+        "christmas list ideas",
+        "fenty beauty",
+        "christmas makeup",
+        "christmas party makeup",
+        "sephora makeup",
+        "holiday makeup",
+        "fashion",
+        "outfit ideas",
+    ],
+    "Makeup": [
+        "rare beauty highlighter",
+        "fenty beauty lip gloss",
+        "rare beauty",
+        "too faced makeup",
+        "makeup products",
+        "beauty",
+        "sephora finds",
+        "amazon finds",
+        "fenty beauty",
+        "makeup tutorial",
+        "best smelling perfume",
+        "christmas makeup",
+        "christmas party makeup",
+        "sephora makeup",
+        "holiday makeup",
+    ],
+    "Skincare": [
+        "skincare products",
+        "skincare routine",
+        "skincare tips",
+        "skincare aesthetic",
+        "beauty",
+        "christmas gifts",
+        "gift guide 2023",
+        "sephora finds",
+        "amazon finds",
+        "that girl aesthetic",
+        "gifts for her",
+        "christmas wishlist",
+        "vanilla perfume",
+        "best smelling perfume",
+        "christmas list ideas",
+    ],
+    "Fragrance": [
+        "victoria secret perfume",
+        "vanilla perfume",
+        "best smelling perfume",
+    ],
+    "Outfit": [
+        "wishlist ideas",
+        "winter beauty",
+        "that girl aesthetic",
+        "gifts for her",
+        "christmas wishlist",
+        "outfit ideas",
+        "fashion",
+    ],
+}
+
+HOOKS = [
+    "Discover the beauty secrets I've uncovered after years of testing. Your glow up journey starts here!",
+    "Tired of endless choices? Let me guide you to the beauty products that truly deliver. Find them on my blog!",
+    "Struggling to curate your beauty routine? Join me on my blog for a personalized guide to being magnetic.",
+    "Beauty simplified! Explore my blog for handpicked essentials that make your routine stress-free and effective.",
+    "Confused about where to start with beauty? Dive into my blog for a carefully curated list of must-have products!",
+    "Unlock the secrets to becoming irresistible. Follow my journey on the blog and discover game-changing beauty products.",
+    "Overwhelmed by the beauty market? Let me be your guide. Find tried-and-true products on my blog.",
+    "Your beauty decisions made easy! Explore my blog for a roadmap to beauty featuring products that really work.",
+    "Embark on a beauty adventure with me! My blog is your destination for products that make a difference.",
+    "Ready for a glow up transformation? Join me on the blog to uncover the magic of tried-and-tested beauty products.",
+    "Simplify your beauty routine with my curated picks! Find the essentials that suit your needs on my blog.",
+    "Curious about the secrets to glowing inside and out? Dive into my blog and let's explore the beauty products together.",
+    "Discover the beauty products that truly stand out. Your journey to becoming irresistible begins on my blog!",
+    "Navigate the beauty world effortlessly! Join me on my blog for a handpicked selection of essential products.",
+    "Struggling to find the right beauty products? Let my blog be your guide to effective and reliable skincare.",
+    "Your beauty questions, answered! Explore my blog for insights into tried-and-true products that work wonders.",
+    "Confused about which beauty products to trust? Join my beauty journey on the blog for reliable recommendations.",
+    "Transform your beauty routine with my beauty discoveries! Find them all on my blog.",
+    "Embark on a beauty revolution with me! Discover top-notch products on my blog that will redefine your routine.",
+    "Ready to make a change in your routine? Let me guide you to the best products on my blog!"
+    "It took me years to test and find the best beauty products that really work, you can find them on my blog.",
+]
+
+
 TITLE_FONT = ImageFont.truetype(TITLE_FONT_PATH, TITLE_FONT_SIZE)
 PRODUCT_TEXT_COLOR = "#FFFFFF"
 PRODUCT_DESC_FONT = ImageFont.truetype(
@@ -294,20 +407,25 @@ BLOG_URL = create_blog_post(
 
 
 ############################# Pinterest ########################################
+N = 5
+selected_hook = random.sample(HOOKS, 1)[0]
+selected_keywords = " ".join(
+    random.sample(sum([KEYWORDS[c] for c in categories], KEYWORDS["General"]), N)
+)
 
 # TODO Optimize metadata based on SEO keywords
 
 # Generate metadata pin
 USER_TOKEN = config["THEALLURECODE_PINTEREST_ACCESS_TOKEN"]
 BOARD_ID = "875668789986577789"
-PIN_TITLE = TITLE_TEXT
+PIN_TITLE = TITLE_TEXT + " with the Best Beauty Products of 2024 | The Allure Code"
 PIN_IMAGE_URL = firebase_image
-PIN_DESCRIPTION = ""  #
+PIN_DESCRIPTION = f"{selected_hook}" + "\n\n About:\n" + selected_keywords
 PIN_LINK = BLOG_URL
-
 
 # Post pinterest
 pin_response = create_pinterest_pin(
     USER_TOKEN, BOARD_ID, PIN_TITLE, PIN_LINK, PIN_IMAGE_URL, PIN_DESCRIPTION
 )
+print(pin_response)
 ################################################################################
