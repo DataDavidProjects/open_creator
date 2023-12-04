@@ -24,90 +24,6 @@ FILE_NAME = f"src/assets/data/{PROJECT_NAME}/pinterest/images/content_{UNIQUE_ID
 
 
 # ___________________________ Content  _________________________________________#
-
-
-# SELECT PRODUCTS
-N_PRODUCTS = 9
-# TODO conversion to cloud
-
-TABLE = "The Allure Code Product table.xlsx"
-PRODUCT_TABLE = os.path.join(PROJECT_PATH, "products", TABLE)
-# Read Product table drop nan
-products_table = pd.read_excel(PRODUCT_TABLE).dropna().astype(str)
-
-# Define columns
-products_table.columns = ["full-name", "name", "category", "link", "image"]
-products_table["image"] += ".png"
-
-# Define category of products
-categories = ["Makeup", "Fragrance"]
-
-selected_products = image_collect(
-    subdir=categories,
-    root=os.path.join(PROJECT_PATH, "images", "products"),
-    n=N_PRODUCTS,
-)
-selected_products_df = pd.DataFrame(selected_products, columns=["file", "path"])
-selected_products_df["image"] = selected_products_df["path"].str.extract(r"([^/]+$)")
-selected_products_df["category"] = selected_products_df["path"].str.split("/").str[7]
-
-# Refine names
-PRODUCT_TABLE = products_table
-IMAGE_TABLE = selected_products_df
-
-# Create final table as Join products_table as PRODUCT_TABLE with selected_products_df as IMAGE_TABLE
-data = selected_products_df.merge(products_table, how="inner", on=["image", "category"])
-print(data)
-
-
-# CREATE INFOGRAPHIC
-
-
-def create_placeholder_image(size, color):
-    """Create a simple placeholder image"""
-    img = Image.new("RGB", size, color)
-    return img
-
-
-# Placeholder image creation
-PLACEHOLDER_IMAGE_SIZE = (240, 255)
-PLACEHOLDER_IMAGE_COLOR = "#000000"
-placeholder_image = create_placeholder_image(
-    PLACEHOLDER_IMAGE_SIZE, PLACEHOLDER_IMAGE_COLOR
-)
-
-
-cover_path = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/scripts/opencreator-pinterest-engine/template.png"
-
-COVER_IMAGE = Image.open(cover_path)
-# Define Canvas
-CANVAS_WIDTH = 1000
-CANVAS_HEIGHT = 1500
-BACKGROUND_INFOGRAPHIC = "#E7E7E7"
-PRODUCT_BACKGROUND_COLOR = "#EFEFEF"
-PRODUCT_CARD_BACKGROUND = "#FFFFFF"
-
-# Constants for layout proportions
-MARGIN_HORIZONTAL = 60
-MARGIN_TOP = 202
-MARGIN_BOTTOM = 180
-GRID_HORIZONTAL_SPACING = 50
-GRID_VERTICAL_SPACING = 70
-CARD_WIDTH = 260
-CARD_HEIGHT = 320
-CORNER_RADIUS = 20
-
-
-# Fonts (using default font as a placeholder)
-
-TITLE_FONT_PATH = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/src/assets/fonts/FLOWRISE.ttf"
-PRODUCT_DESC_FONT_PATH = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/src/assets/fonts/ArialBold.ttf"
-
-TITLE_FONT_SIZE = 80
-HEADER_FONT_SIZE = TITLE_FONT_SIZE / (1.68 * 1.0)
-DESC_FONT_SIZE = HEADER_FONT_SIZE / (1.68 * 2)
-FOOTER_FONT_SIZE = HEADER_FONT_SIZE / 1.68
-
 TITLE_TEXT = random.sample(
     [
         "Hot Right Now",
@@ -243,6 +159,86 @@ HOOKS = [
     "It took me years to test and find the best beauty products that really work, you can find them on my blog.",
 ]
 
+# SELECT PRODUCTS
+N_ROWS = 3
+N_COLUMNS = 3
+N_PRODUCTS = N_ROWS * N_COLUMNS
+# TODO conversion to cloud
+
+TABLE = "The Allure Code Product table.xlsx"
+PRODUCT_TABLE = os.path.join(PROJECT_PATH, "products", TABLE)
+# Read Product table drop nan
+products_table = pd.read_excel(PRODUCT_TABLE).dropna().astype(str)
+
+# Define columns
+products_table.columns = ["full-name", "name", "category", "link", "image"]
+products_table["image"] += ".png"
+
+# Define category of products
+categories = ["Makeup", "Fragrance"]
+
+selected_products = image_collect(
+    subdir=categories,
+    root=os.path.join(PROJECT_PATH, "images", "products"),
+    n=N_PRODUCTS,
+)
+selected_products_df = pd.DataFrame(selected_products, columns=["file", "path"])
+selected_products_df["image"] = selected_products_df["path"].str.extract(r"([^/]+$)")
+selected_products_df["category"] = selected_products_df["path"].str.split("/").str[7]
+
+# Refine names
+PRODUCT_TABLE = products_table
+IMAGE_TABLE = selected_products_df
+
+# Create final table as Join products_table as PRODUCT_TABLE with selected_products_df as IMAGE_TABLE
+data = selected_products_df.merge(products_table, how="inner", on=["image", "category"])
+print(data)
+
+# CREATE INFOGRAPHIC
+
+
+def create_placeholder_image(size, color):
+    """Create a simple placeholder image"""
+    img = Image.new("RGB", size, color)
+    return img
+
+
+# Placeholder image creation
+PLACEHOLDER_IMAGE_SIZE = (240, 255)
+PLACEHOLDER_IMAGE_COLOR = "#000000"
+placeholder_image = create_placeholder_image(
+    PLACEHOLDER_IMAGE_SIZE, PLACEHOLDER_IMAGE_COLOR
+)
+
+cover_path = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/scripts/opencreator-pinterest-engine/template.png"
+
+COVER_IMAGE = Image.open(cover_path)
+# Define Canvas
+CANVAS_WIDTH = 1000
+CANVAS_HEIGHT = 1500
+BACKGROUND_INFOGRAPHIC = "#E7E7E7"
+PRODUCT_BACKGROUND_COLOR = "#EFEFEF"
+PRODUCT_CARD_BACKGROUND = "#FFFFFF"
+
+# Constants for layout proportions
+MARGIN_HORIZONTAL = 60
+MARGIN_TOP = 202
+MARGIN_BOTTOM = 180
+GRID_HORIZONTAL_SPACING = 50
+GRID_VERTICAL_SPACING = 70
+CARD_WIDTH = 260
+CARD_HEIGHT = 320
+CORNER_RADIUS = 20
+
+# Fonts (using default font as a placeholder)
+
+TITLE_FONT_PATH = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/src/assets/fonts/FLOWRISE.ttf"
+PRODUCT_DESC_FONT_PATH = "C:/Users/david/Desktop/Projects/Dev/projects/open_creator/src/assets/fonts/ArialBold.ttf"
+
+TITLE_FONT_SIZE = 80
+HEADER_FONT_SIZE = TITLE_FONT_SIZE / (1.68 * 1.0)
+DESC_FONT_SIZE = HEADER_FONT_SIZE / (1.68 * 2)
+FOOTER_FONT_SIZE = HEADER_FONT_SIZE / 1.68
 
 TITLE_FONT = ImageFont.truetype(TITLE_FONT_PATH, TITLE_FONT_SIZE)
 PRODUCT_TEXT_COLOR = "#FFFFFF"
@@ -273,13 +269,20 @@ infographic = (
     # add cover image
     .add_image(COVER_IMAGE, (0, 0))
     .add_text(
-        TITLE_TEXT, TITLE_POSITION, TITLE_FONT, "#000000", 1000, alignment="center"
+        TITLE_TEXT,
+        TITLE_POSITION,
+        TITLE_FONT,
+        "#000000",
+        1000,
+        alignment="center",
     )
 )
 
 # Add product sections with rounded corners
-for row in range(3):
-    for col in range(3):
+for row in range(N_ROWS):
+    for col in range(N_COLUMNS):
+        # Create product IDX
+        idx = row * 3 + col
         # Create bounding box for product card
         card_top_left = (col_positions[col], row_positions[row])
         card_bottom_right = (
@@ -301,7 +304,7 @@ for row in range(3):
         )
 
         # iterate over data at position n column 0 to get image
-        placeholder_image = data.iloc[row * 3 + col, 0]
+        placeholder_image = data.iloc[idx, 0]
         infographic.add_image(placeholder_image, image_top_left)
 
         text_bg_x_center = (card_top_left[0] + card_bottom_right[0]) // 2
@@ -319,7 +322,7 @@ for row in range(3):
         )
 
         # Calculate the position for the text, assuming a single line of text
-        product_text = data.iloc[row * 3 + col, 5].upper()
+        product_text = data.iloc[idx, 5].upper()
         text_size = PRODUCT_DESC_FONT.getbbox(
             product_text
         )  # Get the bounding box of the text
@@ -331,18 +334,20 @@ for row in range(3):
             text_bg_top_left[1] + (TEXT_BOX_HEIGHT - (text_size[3] - text_size[1])) // 2
         )  # Vertically center in the text box
         infographic.add_text(
-            product_text, (text_x, text_y), PRODUCT_DESC_FONT, PRODUCT_TEXT_COLOR, 500
+            product_text,
+            (text_x, text_y),
+            PRODUCT_DESC_FONT,
+            PRODUCT_TEXT_COLOR,
+            500,
         )
 
 # Show the canvas
-infographic.canvas.show()
-
+# infographic.canvas.show()
 
 # Display the layout
 if data.shape[0] == N_PRODUCTS:
     infographic.canvas.save(FILE_NAME)
 # ______________________________________________________________________________#
-
 
 ############################# Firebase #########################################
 
@@ -359,17 +364,14 @@ firebase_image = get_image_firebase(
     image_name=CLOUD_FILE,
 )
 
-
 assert firebase_image is not None
 ################################################################################
-
 
 ############################# Blog Post ########################################
 
 # Define metadata BLOG
 TOKEN_JSON_FILE = "scripts/token.json"
 GOOGLE_BLOGSPOT_ID = 4309253655499790374
-
 
 template_file_path = os.path.join(PROJECT_PATH, "templates", "blog_template.html")
 output_file_path = os.path.join(PROJECT_PATH, "tables", f"blog_{UNIQUE_ID}.html")
@@ -402,9 +404,7 @@ BLOG_URL = create_blog_post(
     token_json_file=TOKEN_JSON_FILE,
 ).get("url")
 
-
 ################################################################################
-
 
 ############################# Pinterest ########################################
 N = 5
